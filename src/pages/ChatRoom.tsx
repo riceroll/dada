@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChatThread, ChatMsg } from '../types'
+import { TaskIcon, UserAvatar } from '../components/IconKit'
 
 export default function ChatRoom({
   thread,
@@ -29,12 +30,10 @@ export default function ChatRoom({
         <button onClick={onBack} className="text-ink text-xl w-7">
           ←
         </button>
-        <div className="w-9 h-9 rounded-full bg-brand-soft grid place-items-center text-lg">
-          {thread.user.avatarHidden ? thread.user.emoji : thread.user.name[0]}
-        </div>
+        <UserAvatar user={thread.user} size="sm" />
         <div className="flex-1 min-w-0">
           <div className="font-bold text-ink text-sm leading-tight truncate">
-            {thread.user.avatarHidden ? thread.user.emoji + ' ' + thread.user.grade + '同学' : thread.user.name}
+            {thread.user.avatarHidden ? thread.user.grade + '同学' : thread.user.name}
           </div>
           <div className="text-[11px] text-mute leading-tight">
             {thread.user.college} · 信用 {thread.user.credit}
@@ -44,7 +43,7 @@ export default function ChatRoom({
 
       {/* 任务记录上下文（钉在顶部） */}
       <div className="px-4 py-2 bg-brand-soft/40 flex items-center gap-2">
-        <span className="text-base">{thread.taskEmoji}</span>
+        <TaskIcon task={{ emoji: thread.taskEmoji, title: thread.taskTitle, kind: 'random' }} size="sm" />
         <span className="text-xs text-ink/70">
           你们{thread.metAtLabel}一起 <b className="text-ink">{thread.taskTitle}</b> 认识
         </span>
@@ -55,9 +54,7 @@ export default function ChatRoom({
         {msgs.map((m, i) => (
           <div key={i} className={m.from === 'me' ? 'flex justify-end' : 'flex items-end gap-2'}>
             {m.from === 'other' && (
-              <div className="w-7 h-7 rounded-full bg-brand-soft grid place-items-center text-sm shrink-0">
-                {thread.user.emoji}
-              </div>
+              <UserAvatar user={thread.user} size="sm" />
             )}
             <div
               className={`max-w-[78%] rounded-2xl px-3.5 py-2 text-sm ${

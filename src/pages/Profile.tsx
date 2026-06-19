@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { me, buddies } from '../data'
 import DadaMascot from '../components/DadaMascot'
+import { TaskIcon, UserAvatar } from '../components/IconKit'
 
 // AI 逐渐完善的 profile：有些标签带「水平」，有些还是空的等哒哒去问
 interface SkillTag {
@@ -33,9 +34,7 @@ export default function Profile({
           ←
         </button>
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-3xl bg-white/25 grid place-items-center text-4xl shadow-float">
-            {me.emoji}
-          </div>
+          <UserAvatar user={me} size="lg" />
           <div>
             <h1 className="text-2xl font-extrabold">{me.name === '你' ? '我' : me.name}</h1>
             <p className="text-sm text-white/85 mt-0.5">
@@ -58,7 +57,7 @@ export default function Profile({
         <Section title="见面前隐藏头像">
           <div className="flex items-center justify-between">
             <p className="text-sm text-mute flex-1 pr-3">
-              开启后，别人在搭成之前只看到 emoji 和标签，碰头时才揭晓
+              开启后，别人在搭成之前只看到模糊头像和标签，碰头时才揭晓
             </p>
             <button
               onClick={() => setHidden((h) => !h)}
@@ -106,13 +105,11 @@ export default function Profile({
           <button onClick={onOpenBuddy} className="w-full space-y-2.5 text-left">
             {buddies.map((b) => (
               <div key={b.user.id} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl bg-cream grid place-items-center text-lg shrink-0">
-                  {b.taskEmoji}
-                </div>
+                <TaskIcon task={{ emoji: b.taskEmoji, title: b.taskTitle, kind: 'random' }} size="sm" />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-ink truncate">一起{b.taskTitle}</div>
                   <div className="text-[11px] text-mute">
-                    和 {b.user.avatarHidden ? b.user.emoji + ' ' + b.user.grade + '同学' : b.user.name} · {b.metAtLabel}
+                    和 {b.user.avatarHidden ? b.user.grade + '同学' : b.user.name} · {b.metAtLabel}
                   </div>
                 </div>
               </div>

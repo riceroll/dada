@@ -1,4 +1,5 @@
 import { buddies, me } from '../data'
+import { TaskIcon, UserAvatar } from '../components/IconKit'
 
 export default function Buddies({
   onChat,
@@ -25,9 +26,7 @@ export default function Buddies({
           className="w-full text-left bg-gradient-to-br from-brand-light to-brand rounded-card p-4 text-white shadow-float mb-4 mt-1 active:scale-[0.98] transition-transform"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/25 grid place-items-center text-2xl">
-              {me.emoji}
-            </div>
+            <UserAvatar user={me} size="md" />
             <div className="flex-1">
               <div className="font-bold">{me.name === '你' ? '我' : me.name}</div>
               <div className="text-xs text-white/80">
@@ -53,12 +52,10 @@ export default function Buddies({
               className="bg-white rounded-card shadow-soft p-4 animate-slide-up"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-brand-soft grid place-items-center text-2xl shrink-0">
-                  {b.user.avatarHidden ? b.user.emoji : b.user.name[0]}
-                </div>
+                <UserAvatar user={b.user} size="md" />
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-ink">
-                    {b.user.avatarHidden ? b.user.emoji + ' ' + b.user.grade + '同学' : b.user.name}
+                    {b.user.avatarHidden ? b.user.grade + '同学' : b.user.name}
                   </div>
                   <div className="text-xs text-mute">
                     {b.user.gender} · {b.user.college}
@@ -69,7 +66,7 @@ export default function Buddies({
 
               {/* 一起做过什么（关系上下文） */}
               <div className="mt-3 bg-cream rounded-field px-3 py-2 flex items-center gap-2">
-                <span className="text-lg">{b.taskEmoji}</span>
+                <TaskIcon task={{ emoji: b.taskEmoji, title: b.taskTitle, kind: 'random' }} size="sm" />
                 <span className="text-xs text-ink/70">
                   一起 <b className="text-ink">{b.taskTitle}</b>
                 </span>

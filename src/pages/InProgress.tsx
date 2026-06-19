@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Task } from '../types'
 import { me } from '../data'
 import DadaMascot from '../components/DadaMascot'
+import { InfoGlyph, TaskIcon, UserAvatar } from '../components/IconKit'
 
 interface Msg {
   from: 'ai' | 'me' | 'other'
@@ -71,7 +72,9 @@ export default function InProgress({
         {/* 顶栏 */}
         <div className="absolute top-0 left-0 right-0 z-20 pt-safe-t px-4 pb-3 flex items-center justify-between bg-gradient-to-b from-cream/95 to-transparent">
           <div>
-            <div className="text-xs text-mute">正在搭 · {task.emoji} {task.title}</div>
+            <div className="text-xs text-mute flex items-center gap-1.5">
+              <TaskIcon task={task} size="sm" /> 正在搭 · {task.title}
+            </div>
             <div className="font-bold text-ink text-sm flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-task-skill animate-pulse" />
               双方定位中 · 相距 {gap}m
@@ -91,7 +94,9 @@ export default function InProgress({
           <div className="absolute top-0 bottom-0 left-1/2 w-6 bg-white/70" />
           <div className="absolute left-10 top-10 w-40 h-40 rounded-[40px] bg-[#F4E2CE] rotate-6" />
           <div className="absolute right-6 bottom-10 w-44 h-32 rounded-[40px] bg-[#E9EDDD]" />
-          <div className="absolute left-[46%] top-[40%] text-2xl">⛲</div>
+          <div className="absolute left-[46%] top-[40%] w-8 h-8 rounded-full bg-white/70 shadow-soft grid place-items-center">
+            <InfoGlyph name="place" />
+          </div>
         </div>
 
         {/* 连线 */}
@@ -109,19 +114,19 @@ export default function InProgress({
         </svg>
 
         {/* 我 */}
-        <Pin x={meXp} y={62} label="你" color="#FF8A3D" emoji={me.emoji} />
+        <Pin x={meXp} y={62} label="你" color="#FF8A3D" node={<UserAvatar user={me} size="sm" />} />
         {/* 对方 */}
         <Pin
           x={otherX}
           y={40}
           label={task.host.avatarHidden ? '搭子' : task.host.name}
           color="#3DBFA0"
-          emoji={task.host.emoji}
+          node={<UserAvatar user={task.host} size="sm" />}
         />
 
         {gap <= 10 && (
           <div className="absolute left-1/2 -translate-x-1/2 bottom-4 bg-ink text-white text-xs px-4 py-2 rounded-full shadow-float animate-slide-up">
-            🎉 你们碰头啦，头像已互相揭晓
+            你们碰头啦，头像已互相揭晓
           </div>
         )}
       </div>
@@ -152,9 +157,7 @@ export default function InProgress({
               )
             return (
               <div key={i} className="flex items-end gap-2 animate-slide-up">
-                <div className="w-7 h-7 rounded-full bg-task-skill/20 grid place-items-center text-sm">
-                  {task.host.emoji}
-                </div>
+                <UserAvatar user={task.host} size="sm" />
                 <div className="max-w-[80%] bg-white rounded-2xl rounded-bl-md px-3.5 py-2 text-sm text-ink shadow-soft">
                   {m.text}
                 </div>
@@ -185,10 +188,12 @@ export default function InProgress({
       {ending && (
         <div className="absolute inset-0 z-50 grid place-items-center bg-black/40 animate-fade-in px-8">
           <div className="bg-white rounded-card p-6 w-full text-center animate-slide-up">
-            <div className="text-5xl mb-2">🎉</div>
+            <div className="mx-auto mb-2 w-14 h-14 rounded-3xl bg-brand-soft grid place-items-center">
+              <InfoGlyph name="done" />
+            </div>
             <h2 className="text-lg font-extrabold text-ink">搭完了！</h2>
             <p className="text-sm text-mute mt-1">
-              {task.host.avatarHidden ? task.host.emoji + ' 这位搭子' : task.host.name}
+              {task.host.avatarHidden ? '这位搭子' : task.host.name}
               已加入你的「搭搭列表」
             </p>
             <div className="mt-4 bg-cream rounded-field p-3 flex items-center gap-2 text-left">
@@ -215,13 +220,13 @@ function Pin({
   y,
   label,
   color,
-  emoji,
+  node,
 }: {
   x: number
   y: number
   label: string
   color: string
-  emoji: string
+  node: React.ReactNode
 }) {
   return (
     <div
@@ -229,10 +234,10 @@ function Pin({
       style={{ left: `${x}%`, top: `${y}%` }}
     >
       <div
-        className="w-11 h-11 rounded-full grid place-items-center text-lg bg-white shadow-float border-2"
+        className="w-11 h-11 rounded-full grid place-items-center bg-white shadow-float border-2"
         style={{ borderColor: color }}
       >
-        {emoji}
+        {node}
       </div>
       <span
         className="mt-1 text-[10px] font-bold text-white px-2 py-0.5 rounded-full"

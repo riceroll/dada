@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ChatThread } from '../types'
 import { chatThreads } from '../data'
 import ChatRoom from './ChatRoom'
+import { TaskIcon, UserAvatar } from '../components/IconKit'
 
 export default function Chats() {
   const [open, setOpen] = useState<ChatThread | null>(null)
@@ -24,24 +25,22 @@ export default function Chats() {
           >
             {/* 头像 */}
             <div className="relative shrink-0">
-              <div className="w-12 h-12 rounded-full bg-brand-soft grid place-items-center text-2xl">
-                {t.user.avatarHidden ? t.user.emoji : t.user.name[0]}
-              </div>
-              <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white shadow-soft grid place-items-center text-xs">
-                {t.taskEmoji}
+              <UserAvatar user={t.user} size="md" />
+              <span className="absolute -bottom-1 -right-1 scale-[0.72] origin-bottom-right">
+                <TaskIcon task={{ emoji: t.taskEmoji, title: t.taskTitle, kind: 'random' }} size="sm" />
               </span>
             </div>
             {/* 内容 */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-ink truncate">
-                  {t.user.avatarHidden ? t.user.emoji + ' ' + t.user.grade + '同学' : t.user.name}
+                  {t.user.avatarHidden ? t.user.grade + '同学' : t.user.name}
                 </span>
                 <span className="text-[11px] text-mute shrink-0 ml-2">{t.lastTimeLabel}</span>
               </div>
               {/* 任务记录上下文 */}
               <div className="mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cream text-[11px] text-mute">
-                {t.taskEmoji} 一起{t.taskTitle} · {t.metAtLabel}
+                一起{t.taskTitle} · {t.metAtLabel}
               </div>
               <div className="mt-1 flex items-center justify-between">
                 <span className="text-sm text-mute truncate">{t.lastMsg}</span>
