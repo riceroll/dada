@@ -86,13 +86,19 @@ export default function TabBar({
               <span className="relative w-7 h-7 grid place-items-center">
                 {companionPulse && !on && (
                   <>
-                    <span className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/10 blur-xl animate-ping" />
-                    <span className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-brand/25 animate-ping [animation-delay:0.25s]" />
-                    <span className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-soft/35 blur-md" />
-                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-brand ring-2 ring-white" />
+                    <span className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2">
+                      <span className="absolute inset-0 rounded-full bg-brand/10 blur-xl animate-ping" />
+                    </span>
+                    <span className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-56 w-56 -translate-x-1/2 -translate-y-1/2">
+                      <span className="absolute inset-0 rounded-full border-2 border-brand/25 animate-ping [animation-delay:0.25s]" />
+                    </span>
+                    <span className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-soft/35 blur-md" />
+                    <span className="absolute -top-1 -right-1 z-20 w-2.5 h-2.5 rounded-full bg-brand ring-2 ring-white" />
                   </>
                 )}
-                <DadaMascot size={27} bouncing={on || companionPulse} />
+                <span className="relative z-10">
+                  <DadaMascot size={27} bouncing={on || companionPulse} />
+                </span>
               </span>
               <span className={`text-[11px] leading-none font-medium ${on ? 'text-brand' : 'text-mute'}`}>
                 {it.label}
