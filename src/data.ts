@@ -1,0 +1,267 @@
+import type { Task, User, PendingTask, Buddy, ChatThread } from './types'
+
+export const me: User = {
+  id: 'me',
+  name: '你',
+  emoji: '🙂',
+  avatarHidden: true,
+  gender: '男',
+  grade: '大二',
+  college: '设计创意学院',
+  tags: ['网球', '咖啡', '摄影', '吉他'],
+  bio: '想多认识点能一起干小事的人～',
+  credit: 98,
+}
+
+export const users: Record<string, User> = {
+  u1: {
+    id: 'u1',
+    name: '林某某',
+    emoji: '🦊',
+    avatarHidden: true,
+    gender: '女',
+    grade: '大二',
+    college: '建筑与城规',
+    tags: ['咖啡', '插画', 'citywalk'],
+    bio: '下午容易困，需要咖啡因和搭子。',
+    credit: 96,
+  },
+  u2: {
+    id: 'u2',
+    name: '陈某某',
+    emoji: '🐻',
+    avatarHidden: true,
+    gender: '男',
+    grade: '研一',
+    college: '音乐系',
+    tags: ['钢琴', '德彪西', '即兴'],
+    bio: '下午一般在琴房，偶尔缺个翻谱的人。',
+    credit: 99,
+  },
+  u3: {
+    id: 'u3',
+    name: '吴某某',
+    emoji: '🐯',
+    avatarHidden: false,
+    gender: '男',
+    grade: '大三',
+    college: '体育部',
+    tags: ['网球 3.5', '健身', '跑步'],
+    bio: '球友！约球别犹豫。',
+    credit: 95,
+  },
+  u4: {
+    id: 'u4',
+    name: '苏某某',
+    emoji: '🐰',
+    avatarHidden: true,
+    gender: '女',
+    grade: '大一',
+    college: '经管学院',
+    tags: ['奶茶', '自习', '韩剧'],
+    bio: '想去图书馆，但经常走到奶茶店就停下。',
+    credit: 100,
+  },
+  u5: {
+    id: 'u5',
+    name: '何某某',
+    emoji: '🐼',
+    avatarHidden: true,
+    gender: '男',
+    grade: '大二',
+    college: '汽车学院',
+    tags: ['跑步', '篮球', '夜宵'],
+    bio: '操场固定圈，配速 530。',
+    credit: 94,
+  },
+}
+
+export const tasks: Task[] = [
+  {
+    id: 't1',
+    kind: 'random',
+    emoji: '☕',
+    title: '一起去喝杯咖啡',
+    desc: '刚下课有点困，去本部那家手冲坐坐。',
+    host: users.u1,
+    place: '一二九大楼咖啡角',
+    distanceM: 220,
+    whenLabel: '现在',
+    durationMin: 40,
+    joined: 1,
+    expected: 2,
+    mapX: 38,
+    mapY: 42,
+  },
+  {
+    id: 't2',
+    kind: 'skill',
+    emoji: '🎹',
+    title: '琴房练德彪西',
+    desc: '在练《月光》，会钢琴或小提琴伴奏的 feel free to join～',
+    host: users.u2,
+    place: '艺术楼 3F 琴房 305',
+    distanceM: 560,
+    whenLabel: '今天 16:00',
+    durationMin: 60,
+    joined: 1,
+    expected: 2,
+    threshold: '会钢琴 / 小提琴',
+    mapX: 64,
+    mapY: 30,
+  },
+  {
+    id: 't3',
+    kind: 'fill',
+    emoji: '🎾',
+    title: '双打缺一个，打不动了',
+    desc: '我们俩打了一下午快废了，找个 3.0+ 来续命。',
+    host: users.u3,
+    place: '南区网球场 2 号场',
+    distanceM: 880,
+    whenLabel: '现在',
+    durationMin: 50,
+    joined: 3,
+    expected: 4,
+    threshold: '网球 3.0+',
+    mapX: 50,
+    mapY: 66,
+  },
+  {
+    id: 't4',
+    kind: 'random',
+    emoji: '🧋',
+    title: '去图书馆顺路带杯奶茶',
+    desc: '准备泡一下午馆，先冲杯奶茶，同路的一起。',
+    host: users.u4,
+    place: '宿舍 12 栋楼下',
+    distanceM: 140,
+    whenLabel: '今天 14:30',
+    durationMin: 30,
+    joined: 1,
+    expected: 3,
+    mapX: 28,
+    mapY: 58,
+  },
+  {
+    id: 't5',
+    kind: 'random',
+    emoji: '🏃',
+    title: '操场跑三公里',
+    desc: '大概三公里，不卷配速。主要是督促自己别吃完就躺。',
+    host: users.u5,
+    place: '南区田径场',
+    distanceM: 700,
+    whenLabel: '今天 19:30',
+    durationMin: 35,
+    joined: 1,
+    expected: 4,
+    mapX: 72,
+    mapY: 70,
+  },
+]
+
+export const kindMeta: Record<
+  Task['kind'],
+  { label: string; color: string; chip: string }
+> = {
+  random: { label: '随便搭', color: '#FF8A3D', chip: 'bg-brand/12 text-brand' },
+  skill: { label: '找同好', color: '#3DBFA0', chip: 'bg-task-skill/12 text-task-skill' },
+  fill: { label: '缺人补位', color: '#8B7DF0', chip: 'bg-task-fill/12 text-task-fill' },
+}
+
+// ── 「等一会儿」列表：有倒计时的待接任务 + 已过期的「错过了」 ──
+export const pendingTasks: PendingTask[] = [
+  { task: tasks[3], expiresInSec: 25 * 60 }, // 奶茶，今天 14:30
+  { task: tasks[4], expiresInSec: 90 * 60 }, // 跑步，今天 19:30
+  {
+    // 已过期 → 错过了
+    task: {
+      ...tasks[0],
+      id: 't-missed-1',
+      emoji: '🍜',
+      title: '一起去吃拉面',
+      desc: '本来想约的，结果忘了点接受。',
+      host: users.u5,
+      place: '北苑食堂 2F',
+      whenLabel: '今天 12:00',
+    },
+    expiresInSec: -1,
+  },
+]
+
+// ── 搭搭列表：一起做过事的人（社交沉淀）──
+export const buddies: Buddy[] = [
+  {
+    user: users.u3,
+    taskEmoji: '🎾',
+    taskTitle: '南区网球场双打补位',
+    metAtLabel: '刚刚',
+  },
+  {
+    user: users.u1,
+    taskEmoji: '☕',
+    taskTitle: '一二九大楼喝手冲',
+    metAtLabel: '3 天前',
+  },
+  {
+    user: users.u2,
+    taskEmoji: '🎹',
+    taskTitle: '琴房合奏《月光》',
+    metAtLabel: '上周三',
+  },
+  {
+    user: users.u4,
+    taskEmoji: '🧋',
+    taskTitle: '图书馆顺路带奶茶',
+    metAtLabel: '上周',
+  },
+]
+
+// ── 聊天会话：每段对话顶部带「一起做过什么」的任务记录 ──
+export const chatThreads: ChatThread[] = [
+  {
+    id: 'c1',
+    user: users.u3,
+    taskEmoji: '🎾',
+    taskTitle: '南区网球场双打补位',
+    metAtLabel: '刚刚',
+    lastMsg: '下次还约！我周四下午一般都在',
+    lastTimeLabel: '刚刚',
+    unread: 1,
+    messages: [
+      { from: 'other', text: '刚那局打得爽，你正手挺稳啊', timeLabel: '14:20' },
+      { from: 'me', text: '哈哈你救球才离谱，差点没追上', timeLabel: '14:21' },
+      { from: 'other', text: '下次还约！我周四下午一般都在', timeLabel: '14:22' },
+    ],
+  },
+  {
+    id: 'c2',
+    user: users.u1,
+    taskEmoji: '☕',
+    taskTitle: '一二九大楼喝手冲',
+    metAtLabel: '3 天前',
+    lastMsg: '那家新出的耶加雪菲你试了吗',
+    lastTimeLabel: '周一',
+    unread: 0,
+    messages: [
+      { from: 'me', text: '上次那杯手冲真的可以', timeLabel: '周一 16:02' },
+      { from: 'other', text: '那家新出的耶加雪菲你试了吗', timeLabel: '周一 16:10' },
+    ],
+  },
+  {
+    id: 'c3',
+    user: users.u2,
+    taskEmoji: '🎹',
+    taskTitle: '琴房合奏《月光》',
+    metAtLabel: '上周三',
+    lastMsg: '谱子我发你了，下次试试第三乐章',
+    lastTimeLabel: '上周三',
+    unread: 0,
+    messages: [
+      { from: 'other', text: '你触键比我想象的细腻', timeLabel: '上周三 17:30' },
+      { from: 'me', text: '过奖啦，是你伴奏带得好', timeLabel: '上周三 17:32' },
+      { from: 'other', text: '谱子我发你了，下次试试第三乐章', timeLabel: '上周三 17:40' },
+    ],
+  },
+]
