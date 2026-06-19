@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Task } from '../types'
 import { pendingTasks } from '../data'
 import { kindMeta } from '../data'
+import { InfoGlyph, TaskIcon, UserAvatar } from '../components/IconKit'
 
 function fmt(sec: number) {
   const m = Math.floor(sec / 60)
@@ -92,31 +93,26 @@ function PendingCard({
   return (
     <div className="bg-white rounded-card shadow-soft p-4 animate-slide-up">
       <button onClick={onOpen} className="w-full flex gap-3 text-left">
-        <div
-          className="w-12 h-12 rounded-2xl grid place-items-center text-2xl shrink-0"
-          style={{ backgroundColor: meta.color + '1A' }}
-        >
-          {task.emoji}
-        </div>
+        <TaskIcon task={task} size="md" className="shrink-0" />
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-ink truncate">{task.title}</h3>
-          <p className="text-xs text-mute mt-0.5">
-            {task.host.emoji} {task.host.grade} · {task.place}
+          <p className="text-xs text-mute mt-0.5 flex items-center gap-1.5">
+            <UserAvatar user={task.host} size="sm" /> {task.host.grade} · {task.place}
           </p>
-          <p className="text-xs text-mute mt-0.5">🕘 {task.whenLabel}</p>
+          <p className="text-xs text-mute mt-0.5"><InfoGlyph name="time">{task.whenLabel}</InfoGlyph></p>
         </div>
       </button>
       <div className="mt-3 flex items-center justify-between">
         <span
           className={`text-sm font-bold tabular-nums ${urgent ? 'text-brand animate-pulse' : 'text-mute'}`}
         >
-          ⏳ 还剩 {fmt(seconds)}
+          <InfoGlyph name="wait">还剩 {fmt(seconds)}</InfoGlyph>
         </span>
         <button
           onClick={onAccept}
           className="bg-brand text-white font-bold text-sm px-5 py-2 rounded-full shadow-soft active:animate-pop"
         >
-          我去！🙋
+          我去！
         </button>
       </div>
     </div>
@@ -129,13 +125,11 @@ function MissedCard({ task, onOpen }: { task: Task; onOpen: () => void }) {
       onClick={onOpen}
       className="w-full text-left bg-white/60 rounded-card p-4 flex gap-3 items-center opacity-80 active:scale-[0.98] transition-transform"
     >
-      <div className="w-11 h-11 rounded-2xl grid place-items-center text-xl shrink-0 bg-cream grayscale">
-        {task.emoji}
-      </div>
+      <TaskIcon task={task} size="sm" className="shrink-0 grayscale opacity-70" />
       <div className="flex-1 min-w-0">
         <h3 className="font-semibold text-ink/70 truncate">{task.title}</h3>
         <p className="text-xs text-mute mt-0.5">
-          {task.host.emoji} {task.host.grade} · {task.whenLabel} · 已结束
+          {task.host.grade} · {task.whenLabel} · 已结束
         </p>
       </div>
       <span className="text-xs text-brand font-medium shrink-0">联系 TA →</span>
@@ -146,7 +140,7 @@ function MissedCard({ task, onOpen }: { task: Task; onOpen: () => void }) {
 function Empty({ onGoHome }: { onGoHome: () => void }) {
   return (
     <div className="pt-24 flex flex-col items-center text-center">
-      <div className="text-5xl mb-3">🍵</div>
+      <div className="mb-3"><InfoGlyph name="wait" /></div>
       <p className="font-bold text-ink">还没有在等的任务</p>
       <p className="text-xs text-mute mt-1 mb-5">看到心动的活动，点「等一会儿」先存着</p>
       <button

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Task } from '../types'
 import DadaMascot from '../components/DadaMascot'
+import { InfoGlyph, TaskIcon } from '../components/IconKit'
 
 export default function Matching({
   task,
@@ -33,7 +34,9 @@ export default function Matching({
           </div>
 
           <div className="bg-white rounded-card shadow-float p-5 animate-slide-up">
-            <div className="text-4xl mb-3">{matched ? '🎉' : task.emoji}</div>
+            <div className="mb-3 grid place-items-center">
+              {matched ? <InfoGlyph name="done" /> : <TaskIcon task={task} size="lg" />}
+            </div>
             <h1 className="text-xl font-extrabold text-ink">
               {matched ? '搭成了！' : '已经帮你发过去了'}
             </h1>
@@ -43,9 +46,7 @@ export default function Matching({
                 : `等 ${task.host.avatarHidden ? '对方' : task.host.name} 回复一下，确认后再带你去会合。`}
             </p>
             <div className="mt-5 bg-cream rounded-2xl p-3 flex items-center gap-3 text-left">
-              <div className="w-11 h-11 rounded-2xl bg-white grid place-items-center text-2xl shrink-0">
-                {task.emoji}
-              </div>
+              <TaskIcon task={task} size="sm" className="shrink-0" />
               <div className="min-w-0 flex-1">
                 <div className="font-bold text-ink truncate">{task.title}</div>
                 <div className="text-xs text-mute mt-0.5 truncate">{task.place}</div>

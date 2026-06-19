@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Task } from '../types'
 import { me } from '../data'
 import DadaMascot from '../components/DadaMascot'
+import { InfoGlyph, TaskIcon, UserAvatar } from '../components/IconKit'
 
 // ── 脚本化的 AI 发任务对话（demo：mock，无真实后端） ──
 // example 不是顶部静态模板，而是「哒哒」开场抛出的话术引子。
@@ -295,7 +296,7 @@ export default function PostTask({
                 onClick={() => startSeed(s)}
                 className="flex items-center gap-3 bg-cream rounded-field px-4 py-3 active:scale-[0.98] transition-transform text-left"
               >
-                <span className="text-2xl">{s.emoji}</span>
+                <TaskIcon task={s} size="sm" />
                 <span className="text-sm font-medium text-ink">{s.title}</span>
               </button>
             ))}
@@ -348,21 +349,19 @@ function PreviewCard({ draft }: { draft: Draft }) {
           </span>
         </div>
         <div className="flex gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-brand-soft grid place-items-center text-2xl shrink-0">
-            {draft.emoji}
-          </div>
+          <TaskIcon task={draft} size="md" className="shrink-0" />
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-ink">{draft.title}</h3>
             <p className="text-xs text-mute mt-0.5">
-              {me.emoji} {me.grade} · 发起
+              <span className="inline-flex items-center gap-1.5"><UserAvatar user={me} size="sm" /> {me.grade} · 发起</span>
             </p>
           </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          <Chip>🕘 {draft.whenLabel}</Chip>
-          <Chip>📍 {draft.place || '待定'}</Chip>
-          <Chip>👥 想找 {draft.expected - 1} 个伴</Chip>
-          {draft.threshold && <Chip>🎯 {draft.threshold}</Chip>}
+          <Chip><InfoGlyph name="time">{draft.whenLabel}</InfoGlyph></Chip>
+          <Chip><InfoGlyph name="place">{draft.place || '待定'}</InfoGlyph></Chip>
+          <Chip><InfoGlyph name="people">想找 {draft.expected - 1} 个伴</InfoGlyph></Chip>
+          {draft.threshold && <Chip><InfoGlyph name="target">{draft.threshold}</InfoGlyph></Chip>}
         </div>
       </div>
     </div>

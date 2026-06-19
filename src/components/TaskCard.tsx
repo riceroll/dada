@@ -1,5 +1,6 @@
 import type { Task } from '../types'
 import { kindMeta } from '../data'
+import { InfoGlyph, TaskIcon, UserAvatar } from './IconKit'
 
 function dist(m: number) {
   return m < 1000 ? `${m}m` : `${(m / 1000).toFixed(1)}km`
@@ -23,20 +24,17 @@ export default function TaskCard({
         className="w-1.5 self-stretch rounded-full shrink-0"
         style={{ backgroundColor: meta.color }}
       />
-      {/* emoji */}
-      <div
-        className="w-12 h-12 rounded-2xl grid place-items-center text-2xl shrink-0"
-        style={{ backgroundColor: meta.color + '1A' }}
-      >
-        {task.emoji}
-      </div>
+      <TaskIcon task={task} size="md" className="shrink-0" />
       {/* 内容 */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h3 className="font-bold text-ink truncate">{task.title}</h3>
         </div>
         <div className="mt-0.5 flex items-center gap-2 text-xs text-mute">
-          <span>{task.host.avatarHidden ? task.host.emoji : task.host.name}</span>
+          <span className="inline-flex items-center gap-1">
+            <UserAvatar user={task.host} size="sm" />
+            {task.host.avatarHidden ? task.host.grade + '同学' : task.host.name}
+          </span>
           <span>·</span>
           <span>{task.host.grade}</span>
           <span>·</span>
@@ -49,14 +47,14 @@ export default function TaskCard({
             {meta.label}
           </span>
           <span className="px-2 py-0.5 rounded-full text-[11px] bg-cream text-mute">
-            🕘 {task.whenLabel}
+            <InfoGlyph name="time">{task.whenLabel}</InfoGlyph>
           </span>
           <span className="px-2 py-0.5 rounded-full text-[11px] bg-cream text-mute">
-            📍 {dist(task.distanceM)}
+            <InfoGlyph name="place">{dist(task.distanceM)}</InfoGlyph>
           </span>
           {task.threshold && (
             <span className="px-2 py-0.5 rounded-full text-[11px] bg-cream text-mute">
-              🎯 {task.threshold}
+              <InfoGlyph name="target">{task.threshold}</InfoGlyph>
             </span>
           )}
         </div>

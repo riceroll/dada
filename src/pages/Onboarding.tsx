@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import DadaMascot from '../components/DadaMascot'
+import { InterestIcon } from '../components/IconKit'
 
 // 哒哒聊天式 onboarding —— 不填表，在对话里自然收集初始 profile
 // 每一步：哒哒说一句 → 用户从快捷选项里选（可多选 tag）→ 落到 profile
@@ -25,7 +26,7 @@ const steps: Step[] = [
   {
     key: 'tags',
     q: '平时喜欢搞点什么？多选几个，以后我好帮你匹配同好（也可以之后慢慢补）',
-    options: ['☕ 咖啡', '🎾 网球', '🏃 跑步', '🎹 音乐', '📷 摄影', '📚 自习', '🧋 奶茶', '🎮 游戏', '🥾 citywalk'],
+    options: ['咖啡', '网球', '跑步', '音乐', '摄影', '自习', '奶茶', '游戏', 'citywalk'],
     multi: true,
   },
   {
@@ -217,7 +218,10 @@ export default function Onboarding({ onDone }: { onDone: (tags: string[]) => voi
                       on ? 'bg-brand text-white shadow-soft' : 'bg-cream text-ink'
                     }`}
                   >
-                    {opt}
+                    <span className="inline-flex items-center gap-1.5">
+                      <InterestIcon label={opt} />
+                      {opt}
+                    </span>
                   </button>
                 )
               })}

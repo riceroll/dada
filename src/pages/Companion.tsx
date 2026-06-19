@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Task } from '../types'
 import DadaMascot from '../components/DadaMascot'
+import { InfoGlyph, TaskIcon } from '../components/IconKit'
 
 interface Msg {
   from: 'ai' | 'me'
@@ -9,7 +10,7 @@ interface Msg {
 
 // 哒哒主动抛的「卡片」：托底 / 引导发活动 / profile 补全 / 反馈
 interface ProactiveCard {
-  icon: string
+  iconTask: Pick<Task, 'emoji' | 'title' | 'kind'>
   title: string
   desc: string
   cta: string
@@ -17,19 +18,19 @@ interface ProactiveCard {
 
 const cards: ProactiveCard[] = [
   {
-    icon: '🫧',
+    iconTask: { emoji: '', title: '图书馆', kind: 'random' },
     title: '你昨天发的「图书馆」还没人接',
     desc: '那个时间段附近人不多，要我帮你改到 16:00 再广播一次吗？',
     cta: '帮我改时间',
   },
   {
-    icon: '🎾',
+    iconTask: { emoji: '🎾', title: '网球', kind: 'fill' },
     title: '想补全一下你的网球水平吗',
     desc: '最近有好几个 3.0+ 的局，填了水平我能帮你优先匹配。',
     cta: '我是 3.5',
   },
   {
-    icon: '☕',
+    iconTask: { emoji: '☕', title: '喝杯咖啡', kind: 'random' },
     title: '下午容易困？',
     desc: '要不要我现在帮你搭一个「去喝杯咖啡」，附近有 2 个人也在犯困。',
     cta: '搭一个',
@@ -108,9 +109,7 @@ export default function Companion({
             key={c.title}
             className="bg-white rounded-card shadow-soft p-4 flex gap-3 animate-slide-up"
           >
-            <div className="w-11 h-11 rounded-2xl bg-brand-soft grid place-items-center text-xl shrink-0">
-              {c.icon}
-            </div>
+            <TaskIcon task={c.iconTask} size="sm" />
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-ink text-sm">{c.title}</h3>
               <p className="text-xs text-mute mt-1 leading-relaxed">{c.desc}</p>
@@ -141,14 +140,12 @@ export default function Companion({
               >
                 <span className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-brand-soft/70" />
                 <div className="relative z-10 flex gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-soft grid place-items-center text-2xl shrink-0">
-                    {recommendedTask.emoji}
-                  </div>
+                  <TaskIcon task={recommendedTask} size="md" className="shrink-0" />
                   <div className="min-w-0 flex-1">
                     <div className="text-[11px] font-bold text-brand mb-1">附近推荐</div>
                     <h3 className="font-bold text-ink text-sm truncate">{recommendedTask.title}</h3>
                     <p className="text-xs text-mute mt-1 leading-relaxed">
-                      {recommendedTask.place} · {recommendedTask.distanceM}m · 剩 {recommendedTask.durationMin} 分钟
+                      <InfoGlyph name="place">{recommendedTask.place}</InfoGlyph> · {recommendedTask.distanceM}m · 剩 {recommendedTask.durationMin} 分钟
                     </p>
                     <div className="mt-2 text-xs font-bold text-brand">看看这个 →</div>
                   </div>

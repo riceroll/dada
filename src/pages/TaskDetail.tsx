@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Task } from '../types'
 import { kindMeta } from '../data'
 import DadaMascot from '../components/DadaMascot'
+import { InfoGlyph, TaskIcon, UserAvatar } from '../components/IconKit'
 
 function dist(m: number) {
   return m < 1000 ? `${m}m` : `${(m / 1000).toFixed(1)}km`
@@ -39,11 +40,7 @@ export default function TaskDetail({
           ←
         </button>
         <div className="flex items-center gap-4">
-          <div
-            className="w-16 h-16 rounded-3xl grid place-items-center text-4xl shadow-soft bg-white"
-          >
-            {task.emoji}
-          </div>
+          <TaskIcon task={task} size="lg" />
           <div>
             <span
               className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-medium ${meta.chip}`}
@@ -65,23 +62,23 @@ export default function TaskDetail({
 
         {/* 信息行 */}
         <div className="grid grid-cols-2 gap-3">
-          <Info icon="🕘" label="时间" value={task.whenLabel} />
-          <Info icon="⏱️" label="预计" value={`${task.durationMin} 分钟`} />
-          <Info icon="📍" label="地点" value={task.place} />
-          <Info icon="🚶" label="距离" value={dist(task.distanceM)} />
+          <Info icon={<InfoGlyph name="time" />} label="时间" value={task.whenLabel} />
+          <Info icon={<InfoGlyph name="duration" />} label="预计" value={`${task.durationMin} 分钟`} />
+          <Info icon={<InfoGlyph name="place" />} label="地点" value={task.place} />
+          <Info icon={<InfoGlyph name="distance" />} label="距离" value={dist(task.distanceM)} />
           <Info
-            icon="👥"
+            icon={<InfoGlyph name="people" />}
             label="人数"
             value={`${task.joined}/${task.expected} 人`}
           />
-          {task.threshold && <Info icon="🎯" label="门槛" value={task.threshold} />}
+          {task.threshold && <Info icon={<InfoGlyph name="target" />} label="门槛" value={task.threshold} />}
         </div>
 
         {/* 发起人（见面前隐藏头像） */}
         <div className="bg-white rounded-card p-4 shadow-soft">
           <div className="flex items-center gap-3">
-            <div className="relative w-14 h-14 rounded-full bg-brand-soft grid place-items-center text-2xl">
-              {task.host.avatarHidden ? task.host.emoji : task.host.name[0]}
+            <div className="relative">
+              <UserAvatar user={task.host} size="lg" />
               {task.host.avatarHidden && (
                 <span className="absolute -bottom-1 -right-1 text-[10px] bg-ink/80 text-white px-1.5 py-0.5 rounded-full">
                   见面揭晓
@@ -129,7 +126,7 @@ export default function TaskDetail({
           onClick={handleAccept}
           className="flex-[1.6] bg-brand text-white font-bold py-3.5 rounded-full shadow-float active:animate-pop"
         >
-          我去！🙋
+          我去！
         </button>
       </div>
 
@@ -137,7 +134,9 @@ export default function TaskDetail({
       {waitToast && (
         <div className="absolute inset-0 z-40 grid place-items-center bg-black/20 animate-fade-in">
           <div className="bg-white rounded-card px-6 py-5 shadow-float text-center">
-            <div className="text-3xl mb-2">⏳</div>
+            <div className="mx-auto mb-2 w-12 h-12 rounded-2xl bg-brand-soft grid place-items-center">
+              <InfoGlyph name="wait" />
+            </div>
             <p className="font-bold text-ink">放进「等一会儿」啦</p>
             <p className="text-xs text-mute mt-1">想好了在列表里点接受，有倒计时哦</p>
           </div>
@@ -182,14 +181,14 @@ function Info({
   label,
   value,
 }: {
-  icon: string
+  icon: React.ReactNode
   label: string
   value: string
 }) {
   return (
     <div className="bg-white rounded-card p-3 shadow-soft">
       <div className="text-xs text-mute">
-        {icon} {label}
+        <span className="inline-flex items-center gap-1.5">{icon}{label}</span>
       </div>
       <div className="text-sm font-semibold text-ink mt-1 truncate">{value}</div>
     </div>

@@ -3,6 +3,7 @@ import type { Task } from '../types'
 import { tasks as allTasks, me } from '../data'
 import MapView from '../components/MapView'
 import TaskCard from '../components/TaskCard'
+import { UserAvatar } from '../components/IconKit'
 
 type View = 'map' | 'list'
 
@@ -57,9 +58,9 @@ export default function Home({
           {/* 我的头像入口 */}
           <button
             onClick={onOpenProfile}
-            className="w-9 h-9 rounded-full bg-white shadow-soft grid place-items-center text-lg active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-white shadow-soft grid place-items-center active:scale-95 transition-transform"
           >
-            {me.emoji}
+            <UserAvatar user={me} size="sm" />
           </button>
         </div>
       </header>

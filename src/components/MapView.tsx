@@ -1,5 +1,6 @@
 import type { Task } from '../types'
 import { kindMeta } from '../data'
+import { TaskIcon } from './IconKit'
 
 function mapTimeBadge(task: Task) {
   if (task.whenLabel === '现在') {
@@ -15,7 +16,7 @@ function mapTimeBadge(task: Task) {
   }
 }
 
-// 浅暖色地图皮肤 + 平滑地图 pin（emoji）
+// 浅暖色地图皮肤 + 平滑地图 pin（统一 icon）
 export default function MapView({
   tasks,
   onPick,
@@ -64,8 +65,8 @@ export default function MapView({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <div className="absolute left-1/2 top-[24px] -translate-x-1/2 -translate-y-1/2 text-[22px]">
-                  {t.emoji}
+                <div className="absolute left-1/2 top-[24px] -translate-x-1/2 -translate-y-1/2 scale-[0.68]">
+                  <TaskIcon task={t} size="md" />
                 </div>
                 {/* 人数小角标 */}
                 <span
