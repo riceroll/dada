@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ArrowLeft, Clock3, LockKeyhole, MapPin, ShieldCheck, Sparkles, Users } from 'lucide-react'
 import type { ActivityTaskV2 } from '../../types/profile'
 
@@ -8,6 +9,8 @@ interface TaskDetailV2Props {
 }
 
 export default function TaskDetailV2({ task, onBack, onRequest }: TaskDetailV2Props) {
+  const countdown = useCountdown(task.expiresInSec)
+
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#f7f2eb] text-[#1f1b18]">
       <section className="signal-field shrink-0 px-4 pb-5 pt-safe-t text-white">
@@ -28,13 +31,28 @@ export default function TaskDetailV2({ task, onBack, onRequest }: TaskDetailV2Pr
           <Metric icon={<Sparkles size={15} />} label="发起人" value={task.hostAlias} />
         </div>
         <div className="mt-5 inline-flex rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/78 backdrop-blur-xl">
-          {task.expiresAtLabel}
+          {countdown}
         </div>
         </div>
       </section>
 
       <section className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
         <div className="space-y-0 pb-4">
+          <section className="border-b border-[#1f1b18]/10 py-4">
+            <div className="flex items-center gap-3">
+              <BlurredHostPhoto src={task.hostPhotoUrl} />
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center gap-2 text-sm font-semibold">
+                  <Sparkles size={16} />
+                  <span>{task.hostAlias}</span>
+                </div>
+                <p className="text-[13px] leading-5 text-[#5f5750]">
+                  {task.hostMatchReason ?? 'TA 和你的活动偏好、时间窗口或校园范围有明显重叠。'}
+                </p>
+              </div>
+            </div>
+          </section>
+
           <section className="border-b border-[#1f1b18]/10 py-5">
             <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
               <ShieldCheck size={16} />
@@ -63,6 +81,41 @@ export default function TaskDetailV2({ task, onBack, onRequest }: TaskDetailV2Pr
         </button>
       </footer>
     </main>
+  )
+}
+
+function useCountdown(initialSeconds?: number) {
+  const [secondsLeft, setSecondsLeft] = useState(initialSeconds ?? 48 * 60 * 60)
+
+  useEffect(() => {
+    setSecondsLeft(initialSeconds ?? 48 * 60 * 60)
+  }, [initialSeconds])
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setSecondsLeft((current) => Math.max(0, current - 1))
+    }, 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const hours = Math.floor(secondsLeft / 3600)
+  const minutes = Math.floor((secondsLeft % 3600) / 60)
+  const seconds = secondsLeft % 60
+
+  if (hours >= 1) return `${hours}h ${String(minutes).padStart(2, '0')}m 后消失`
+  return `${minutes}:${String(seconds).padStart(2, '0')} 后消失`
+}
+
+function BlurredHostPhoto({ src }: { src?: string }) {
+  return (
+    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[22px] bg-[#1f1b18]/10 shadow-[0_12px_30px_rgba(31,27,24,0.1)]">
+      {src ? (
+        <img src={src} alt="模糊的发起人头像" className="h-full w-full scale-110 object-cover blur-[4px] saturate-[0.86]" />
+      ) : (
+        <div className="h-full w-full bg-[radial-gradient(circle_at_35%_25%,#fff7df,#b9d5c2_48%,#1f1b18_88%)] blur-[3px]" />
+      )}
+      <div className="absolute inset-0 bg-[#1f1b18]/12" />
+    </div>
   )
 }
 

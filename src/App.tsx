@@ -193,10 +193,13 @@ function activityFromLegacyTask(task: Task): ActivityTaskV2 {
     activityNodeId: activityNodeFromTask(task),
     hostProfileId: task.host.id,
     hostAlias: `${task.host.college}${task.host.grade}`,
+    hostPhotoUrl: legacyHostPhoto(task.host.id),
+    hostMatchReason: legacyHostMatchReason(task),
     place: task.place,
     fuzzyArea: task.place.includes('南') ? '南区附近' : task.place.includes('图书馆') ? '教学区' : '校园附近',
     startsAtLabel: task.whenLabel,
     expiresAtLabel: task.whenLabel === '现在' ? `剩 ${task.durationMin} 分钟` : '48 小时内消失',
+    expiresInSec: task.whenLabel === '现在' ? task.durationMin * 60 : 48 * 60 * 60,
     desiredGroupSize: task.expected,
     currentGroupSize: task.joined,
     desiredPersonHint: task.threshold ?? task.desc ?? '想找一个时间刚好的人',
@@ -214,5 +217,24 @@ function activityNodeFromTask(task: Task) {
   if (task.title.includes('琴') || task.title.includes('钢琴')) return 'piano'
   if (task.title.includes('网球')) return 'tennis'
   return task.kind === 'skill' ? 'music' : 'city-walk'
+}
+
+function legacyHostPhoto(userId: string) {
+  const photos: Record<string, string> = {
+    u1: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80',
+    u2: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=240&q=80',
+    u3: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80',
+    u4: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=80',
+    u5: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=240&q=80',
+  }
+  return photos[userId] ?? photos.u1
+}
+
+function legacyHostMatchReason(task: Task) {
+  if (task.title.includes('咖啡')) return 'TA 的资料里也有咖啡和短时间出门，和你的低压力偏好很接近。'
+  if (task.title.includes('图书馆')) return 'TA 想找安静但能互相督促的人，和你的自习倾向刚好重叠。'
+  if (task.title.includes('跑')) return '这个局不卷配速，更像互相拉一把出门，适合轻量加入。'
+  if (task.title.includes('琴')) return 'TA 接受旁听或翻谱，你的音乐兴趣可以自然接上。'
+  return 'TA 的时间、距离和活动偏好，和你现在的雷达有明显重叠。'
 }
 

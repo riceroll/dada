@@ -81,10 +81,13 @@ export interface ActivityTaskV2 {
   activityNodeId: string
   hostProfileId: string
   hostAlias: string
+  hostPhotoUrl?: string
+  hostMatchReason?: string
   place: string
   fuzzyArea: string
   startsAtLabel: string
   expiresAtLabel: string
+  expiresInSec?: number
   desiredGroupSize: number
   currentGroupSize: number
   desiredPersonHint: string
