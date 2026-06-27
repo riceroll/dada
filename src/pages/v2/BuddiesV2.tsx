@@ -51,7 +51,7 @@ export default function BuddiesV2({
                 </div>
                 <ShieldCheck size={18} className="text-[#8a7e74]" />
               </div>
-              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[#f3eee6]/80 px-3 py-2.5">
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[#f6f0e8]/55 px-3 py-2.5">
                 <TaskIcon task={{ emoji: buddy.taskEmoji, title: buddy.taskTitle, kind: 'random' }} size="sm" />
                 <p className="min-w-0 flex-1 truncate text-sm text-[#5f5750]">一起 {buddy.taskTitle}</p>
               </div>

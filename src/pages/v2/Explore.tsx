@@ -265,7 +265,7 @@ function ActivityCard({
         <InfoPill icon={<Map size={13} />} label={task.place} />
         <InfoPill icon={<Sparkles size={13} />} label={task.hostAlias} />
       </div>
-      <div className="mt-3 flex items-center justify-between gap-2 rounded-[16px] bg-[#f7f2eb] px-3 py-2.5">
+      <div className="mt-3 flex items-center justify-between gap-2 rounded-[16px] bg-[#f6f0e8]/55 px-3 py-2.5">
         <p className="min-w-0 flex-1 truncate text-[13px] leading-5 text-[#5f5750]">{task.desiredPersonHint}</p>
         {onShake ? (
           <button type="button" onClick={() => onOpenTask(task)} className="flex h-8 shrink-0 items-center gap-1 rounded-full bg-[#1f1b18] px-3 text-[11px] font-semibold text-white">
@@ -285,7 +285,7 @@ function ActivityCard({
 
 function InfoPill({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-1 rounded-full bg-[#f7f2eb] px-2 py-1.5">
+    <div className="flex min-w-0 items-center gap-1 rounded-full bg-[#f6f0e8]/50 px-2 py-1.5">
       <span className="shrink-0">{icon}</span>
       <span className="truncate">{label}</span>
     </div>

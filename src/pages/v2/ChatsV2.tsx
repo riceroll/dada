@@ -38,7 +38,7 @@ export default function ChatsV2() {
                     </h2>
                     <span className="shrink-0 text-[11px] font-medium text-[#8a7e74]">{thread.lastTimeLabel}</span>
                   </div>
-                  <div className="mt-1 inline-flex max-w-full items-center gap-1 rounded-full bg-[#f3eee6]/80 px-3 py-1 text-[11px] font-medium text-[#6f655d]">
+                  <div className="mt-1 inline-flex max-w-full items-center gap-1 rounded-full bg-[#f6f0e8]/55 px-3 py-1 text-[11px] font-medium text-[#6f655d]">
                     <ShieldCheck size={12} />
                     <span className="truncate">一起{thread.taskTitle} · {thread.metAtLabel}</span>
                   </div>

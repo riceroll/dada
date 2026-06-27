@@ -65,7 +65,7 @@ export default function PendingV2({
                     </p>
                   </div>
                 </button>
-                <div className="mt-3 flex items-center justify-between rounded-[16px] bg-[#f3eee6]/80 px-3 py-2.5">
+                <div className="mt-3 flex items-center justify-between rounded-[16px] bg-[#f6f0e8]/55 px-3 py-2.5">
                   <div className="flex min-w-0 items-center gap-2">
                     <UserAvatar user={item.task.host} size="sm" />
                     <span className="truncate text-[13px] text-[#5f5750]">{item.task.host.grade} · {item.task.host.college}</span>
