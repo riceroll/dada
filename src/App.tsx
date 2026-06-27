@@ -3,11 +3,7 @@ import type { Task } from './types'
 import type { ActivityTaskV2, GeneratedProfile, OnboardingProfileDraft } from './types/profile'
 import PhoneFrame from './components/PhoneFrame'
 import TabBar, { type Tab } from './components/TabBar'
-import PostTask from './pages/PostTask'
-import TaskDetail from './pages/TaskDetail'
-import InProgress from './pages/InProgress'
 import Onboarding from './pages/Onboarding'
-import Matching from './pages/Matching'
 import Splash from './pages/v2/Splash'
 import OnboardingV2 from './pages/v2/OnboardingV2'
 import ProfileReveal from './pages/v2/ProfileReveal'
@@ -26,14 +22,10 @@ import { pendingTasks, chatThreads, tasks } from './data'
 
 // 覆盖在 Tab 之上的全屏流程
 type Overlay =
-  | 'post'
   | 'shake'
-  | 'detail'
   | 'v2-detail'
-  | 'matching'
   | 'v2-request'
   | 'v2-match-chat'
-  | 'progress'
   | 'v2-meeting'
   | 'profile'
   | null
@@ -44,7 +36,6 @@ export default function App() {
   const [introScreen, setIntroScreen] = useState<IntroScreen>('splash')
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay>(null)
-  const [active, setActive] = useState<Task | null>(null)
   const [activeV2, setActiveV2] = useState<ActivityTaskV2 | null>(null)
   const [generatedProfile, setGeneratedProfile] = useState<GeneratedProfile | null>(null)
   const [dadaEventReady, setDadaEventReady] = useState(false)
@@ -69,12 +60,12 @@ export default function App() {
   }
 
   function openTask(t: Task) {
-    setActive(t)
-    setOverlay('detail')
+    setActiveV2(activityFromLegacyTask(t))
+    setOverlay('v2-detail')
   }
   function accept(t: Task) {
-    setActive(t)
-    setOverlay('matching')
+    setActiveV2(activityFromLegacyTask(t))
+    setOverlay('v2-request')
   }
   function openTaskV2(task: ActivityTaskV2) {
     setActiveV2(task)
@@ -117,35 +108,17 @@ export default function App() {
   return (
     <PhoneFrame>
       {/* 全屏覆盖流程 */}
-      {overlay === 'post' && (
-        <PostTask onClose={() => setOverlay(null)} onPublished={() => setOverlay(null)} />
-      )}
       {overlay === 'shake' && (
         <ShakeBuddy onClose={() => setOverlay(null)} onPublished={() => setOverlay(null)} />
       )}
-      {overlay === 'detail' && active && (
-        <TaskDetail task={active} onBack={() => setOverlay(null)} onAccepted={accept} />
-      )}
       {overlay === 'v2-detail' && activeV2 && (
         <TaskDetailV2 task={activeV2} onBack={() => setOverlay(null)} onRequest={() => setOverlay('v2-request')} />
-      )}
-      {overlay === 'matching' && active && (
-        <Matching task={active} onMatched={() => setOverlay('progress')} />
       )}
       {overlay === 'v2-request' && activeV2 && (
         <RequestMatchingV2 task={activeV2} onMatched={() => setOverlay('v2-match-chat')} />
       )}
       {overlay === 'v2-match-chat' && activeV2 && (
         <MatchChatV2 task={activeV2} onBack={() => setOverlay(null)} onMeet={() => setOverlay('v2-meeting')} />
-      )}
-      {overlay === 'progress' && active && (
-        <InProgress
-          task={active}
-          onFinish={() => {
-            setOverlay(null)
-            setTab('buddies')
-          }}
-        />
       )}
       {overlay === 'v2-meeting' && activeV2 && (
         <MeetingV2
@@ -211,5 +184,35 @@ export default function App() {
       )}
     </PhoneFrame>
   )
+}
+
+function activityFromLegacyTask(task: Task): ActivityTaskV2 {
+  return {
+    id: `legacy-${task.id}`,
+    title: task.title,
+    activityNodeId: activityNodeFromTask(task),
+    hostProfileId: task.host.id,
+    hostAlias: `${task.host.college}${task.host.grade}`,
+    place: task.place,
+    fuzzyArea: task.place.includes('南') ? '南区附近' : task.place.includes('图书馆') ? '教学区' : '校园附近',
+    startsAtLabel: task.whenLabel,
+    expiresAtLabel: task.whenLabel === '现在' ? `剩 ${task.durationMin} 分钟` : '48 小时内消失',
+    desiredGroupSize: task.expected,
+    currentGroupSize: task.joined,
+    desiredPersonHint: task.threshold ?? task.desc ?? '想找一个时间刚好的人',
+    compatibilityReason: task.desc ?? '这个活动和你的兴趣、时间或位置刚好有一点重叠。',
+    locked: false,
+    mapX: task.mapX,
+    mapY: task.mapY,
+  }
+}
+
+function activityNodeFromTask(task: Task) {
+  if (task.title.includes('咖啡')) return 'coffee'
+  if (task.title.includes('图书馆') || task.title.includes('自习')) return 'library-study'
+  if (task.title.includes('跑')) return 'running'
+  if (task.title.includes('琴') || task.title.includes('钢琴')) return 'piano'
+  if (task.title.includes('网球')) return 'tennis'
+  return task.kind === 'skill' ? 'music' : 'city-walk'
 }
 
