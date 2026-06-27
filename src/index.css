@@ -70,15 +70,15 @@
   }
 
   .paper-card {
-    border: 1px solid rgba(31, 27, 24, 0.055);
+    border: 1px solid rgba(31, 27, 24, 0.078);
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 252, 247, 0.46)),
-      radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.56), transparent 32%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 252, 247, 0.62)),
+      radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.46), transparent 32%);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.58) inset,
+      0 1px 0 rgba(255, 255, 255, 0.72) inset,
       0 10px 26px rgba(31, 27, 24, 0.045),
       0 1px 6px rgba(31, 27, 24, 0.026);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(4px);
   }
 
   .paper-card-pressed {
