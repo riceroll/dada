@@ -10,57 +10,50 @@ interface TaskDetailV2Props {
 export default function TaskDetailV2({ task, onBack, onRequest }: TaskDetailV2Props) {
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#f7f2eb] text-[#1f1b18]">
-      <header className="px-4 pb-3 pt-safe-t">
-        <button type="button" onClick={onBack} className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70">
+      <section className="signal-field shrink-0 px-4 pb-5 pt-safe-t text-white">
+        <div className="signal-vignette absolute inset-0" />
+        <div className="relative z-10">
+        <button type="button" onClick={onBack} className="mb-7 flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/10 backdrop-blur-xl">
           <ArrowLeft size={18} />
         </button>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Activity request</p>
-        <h1 className="mt-2 text-[31px] font-semibold leading-[1.04] tracking-[-0.03em]">{task.title}</h1>
-      </header>
+        <div className="max-w-[21rem]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">Activity request</p>
+          <h1 className="mt-3 text-[35px] font-semibold leading-[1.02] tracking-[-0.035em]">{task.title}</h1>
+          <p className="mt-4 text-[14px] leading-6 text-white/64">{task.compatibilityReason}</p>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-white/12 pt-4">
+          <Metric icon={<Clock3 size={15} />} label="开始" value={task.startsAtLabel} />
+          <Metric icon={<Users size={15} />} label="人数" value={`${task.currentGroupSize}/${task.desiredGroupSize}`} />
+          <Metric icon={<MapPin size={15} />} label="区域" value={task.fuzzyArea} />
+          <Metric icon={<Sparkles size={15} />} label="发起人" value={task.hostAlias} />
+        </div>
+        <div className="mt-5 inline-flex rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/78 backdrop-blur-xl">
+          {task.expiresAtLabel}
+        </div>
+        </div>
+      </section>
 
       <section className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
-        <div className="space-y-2.5 pb-4">
-          <article className="overflow-hidden rounded-[26px] bg-[#1f1b18] p-4 text-white shadow-[0_18px_54px_rgba(31,27,24,0.18)]">
-            <div className="relative mb-4 h-36 overflow-hidden rounded-[22px] bg-[#15120f]">
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,#16120f_0%,#28231f_54%,#14110f_100%)]" />
-              <div className="absolute -left-10 -top-12 h-44 w-44 rounded-full bg-[#f4d47f]/24 blur-3xl" />
-              <div className="absolute -right-12 top-8 h-48 w-48 rounded-full bg-[#9fc7ae]/22 blur-3xl" />
-              <div className="absolute bottom-[-72px] left-16 h-44 w-44 rounded-full bg-[#d77b6f]/16 blur-3xl" />
-              <div className="absolute inset-0 opacity-[0.18] [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.7)_1px,transparent_0)] [background-size:18px_18px]" />
-              <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.08)_36%,transparent_52%)]" />
-              <div className="absolute left-4 top-4 rounded-full bg-white/12 px-3 py-1.5 text-[11px] font-semibold backdrop-blur">{task.expiresAtLabel}</div>
-              <div className="absolute bottom-4 left-4 right-4 rounded-[18px] border border-white/10 bg-white/10 p-3 backdrop-blur-xl">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/45">Why this appeared</p>
-                <p className="mt-1.5 line-clamp-2 text-[13px] leading-5 text-white/78">{task.compatibilityReason}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-[13px]">
-              <Metric icon={<Clock3 size={15} />} label="开始" value={task.startsAtLabel} dark />
-              <Metric icon={<Users size={15} />} label="人数" value={`${task.currentGroupSize}/${task.desiredGroupSize}`} dark />
-              <Metric icon={<MapPin size={15} />} label="区域" value={task.fuzzyArea} dark />
-              <Metric icon={<Sparkles size={15} />} label="发起人" value={task.hostAlias} dark />
-            </div>
-          </article>
-
-          <article className="rounded-[22px] border border-[#1f1b18]/10 bg-white/74 p-3.5 shadow-[0_14px_34px_rgba(31,27,24,0.06)]">
-            <div className="mb-2.5 flex items-center gap-2 text-sm font-semibold">
+        <div className="space-y-0 pb-4">
+          <section className="border-b border-[#1f1b18]/10 py-5">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
               <ShieldCheck size={16} />
               <span>你发出请求后，对方先看到这些</span>
             </div>
-            <div className="space-y-1.5 text-[13px] leading-5 text-[#5f5750]">
-              <p>你的抽象头像、年级和少量匹配标签。</p>
-              <p>你为什么适合这个活动的一句话说明。</p>
-              <p>不会直接显示真实头像、完整资料或精确位置。</p>
+            <div className="space-y-3 text-[13px] leading-5 text-[#5f5750]">
+              <InfoLine text="你的抽象头像、年级和少量匹配标签。" />
+              <InfoLine text="你为什么适合这个活动的一句话说明。" />
+              <InfoLine text="不会直接显示真实头像、完整资料或精确位置。" />
             </div>
-          </article>
+          </section>
 
-          <article className="rounded-[22px] border border-[#1f1b18]/10 bg-white/74 p-3.5 shadow-[0_14px_34px_rgba(31,27,24,0.06)]">
-            <div className="mb-2.5 flex items-center gap-2 text-sm font-semibold">
+          <section className="py-5">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
               <LockKeyhole size={16} />
               <span>加入前的小约定</span>
             </div>
-            <p className="text-[13px] leading-5 text-[#5f5750]">这不是开放聊天邀请。对方确认后，你们会先进入带倒计时的 match chat，头像、位置、自由聊天都可以单独请求。</p>
-          </article>
+            <p className="text-[13px] leading-6 text-[#5f5750]">这不是开放聊天邀请。对方确认后，你们会先进入带倒计时的 match chat，头像、位置、自由聊天都可以单独请求。</p>
+          </section>
         </div>
       </section>
 
@@ -73,14 +66,23 @@ export default function TaskDetailV2({ task, onBack, onRequest }: TaskDetailV2Pr
   )
 }
 
-function Metric({ icon, label, value, dark = false }: { icon: React.ReactNode; label: string; value: string; dark?: boolean }) {
+function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className={`rounded-[16px] p-2.5 ${dark ? 'bg-white/10 text-white' : 'bg-[#f7f2eb] text-[#1f1b18]'}`}>
-      <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] opacity-55">
+    <div className="min-w-0">
+      <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/42">
         {icon}
         <span>{label}</span>
       </div>
-      <p className="truncate font-semibold">{value}</p>
+      <p className="truncate text-[13px] font-semibold text-white/88">{value}</p>
+    </div>
+  )
+}
+
+function InfoLine({ text }: { text: string }) {
+  return (
+    <div className="flex gap-3">
+      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1f1b18]/35" />
+      <p>{text}</p>
     </div>
   )
 }
