@@ -59,6 +59,11 @@ export interface SelfIntroAnswers {
   extra: string
 }
 
+export interface ProfileMedia {
+  avatarUrl: string
+  galleryUrls: string[]
+}
+
 export interface GeneratedProfile {
   headline: string
   summary: string
@@ -69,6 +74,7 @@ export interface GeneratedProfile {
 
 export interface OnboardingProfileDraft {
   basics: ProfileBasics
+  media: ProfileMedia
   interests: InterestSelection[]
   desiredPeople: DesiredPeople
   selfIntro: SelfIntroAnswers
