@@ -195,11 +195,7 @@ function ExploreMap({ tasks, onOpenTask }: { tasks: ActivityTaskV2[]; onShake: (
           >
             <ActivityCard task={selectedTask} compact onOpenTask={onOpenTask} />
           </div>
-        ) : (
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-[#1f1b18]/10 bg-white/75 px-4 py-2 text-xs font-semibold text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
-            拖动地图，点一个标记查看
-          </div>
-        )}
+        ) : null}
       </div>
     </section>
   )
