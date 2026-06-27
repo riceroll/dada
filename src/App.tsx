@@ -6,18 +6,18 @@ import TabBar, { type Tab } from './components/TabBar'
 import PostTask from './pages/PostTask'
 import TaskDetail from './pages/TaskDetail'
 import InProgress from './pages/InProgress'
-import Pending from './pages/Pending'
-import Chats from './pages/Chats'
-import Buddies from './pages/Buddies'
 import Onboarding from './pages/Onboarding'
-import Profile from './pages/Profile'
-import Companion from './pages/Companion'
 import Matching from './pages/Matching'
 import Splash from './pages/v2/Splash'
 import OnboardingV2 from './pages/v2/OnboardingV2'
 import ProfileReveal from './pages/v2/ProfileReveal'
 import Explore from './pages/v2/Explore'
 import ShakeBuddy from './pages/v2/ShakeBuddy'
+import PendingV2 from './pages/v2/PendingV2'
+import CompanionV2 from './pages/v2/CompanionV2'
+import ChatsV2 from './pages/v2/ChatsV2'
+import BuddiesV2 from './pages/v2/BuddiesV2'
+import ProfileV2 from './pages/v2/ProfileV2'
 import { pendingTasks, chatThreads, tasks } from './data'
 
 // 覆盖在 Tab 之上的全屏流程
@@ -119,7 +119,7 @@ export default function App() {
         />
       )}
       {overlay === 'profile' && (
-        <Profile
+        <ProfileV2
           onBack={() => setOverlay(null)}
           onOpenBuddy={() => {
             setOverlay(null)
@@ -136,22 +136,22 @@ export default function App() {
               <Explore onShake={() => setOverlay('shake')} onOpenProfile={() => setOverlay('profile')} />
             )}
             {tab === 'pending' && (
-              <Pending
+              <PendingV2
                 onOpenTask={openTask}
                 onAccept={accept}
                 onGoHome={() => setTab('home')}
               />
             )}
             {tab === 'companion' && (
-              <Companion
-                onPost={() => setOverlay('post')}
+              <CompanionV2
+                onPost={() => setOverlay('shake')}
                 recommendedTask={dadaEventOpened ? dadaRecommendedTask : null}
                 onOpenTask={openTask}
               />
             )}
-            {tab === 'chats' && <Chats />}
+            {tab === 'chats' && <ChatsV2 />}
             {tab === 'buddies' && (
-              <Buddies
+              <BuddiesV2
                 onChat={() => setTab('chats')}
                 onGoHome={() => setTab('home')}
                 onOpenProfile={() => setOverlay('profile')}
