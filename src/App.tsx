@@ -37,6 +37,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay>(null)
   const [activeV2, setActiveV2] = useState<ActivityTaskV2 | null>(null)
+  const [createdTasks, setCreatedTasks] = useState<ActivityTaskV2[]>([])
   const [generatedProfile, setGeneratedProfile] = useState<GeneratedProfile | null>(null)
   const [dadaEventReady, setDadaEventReady] = useState(false)
   const [dadaEventOpened, setDadaEventOpened] = useState(false)
@@ -68,6 +69,11 @@ export default function App() {
     setOverlay('v2-request')
   }
   function openTaskV2(task: ActivityTaskV2) {
+    setActiveV2(task)
+    setOverlay('v2-detail')
+  }
+  function publishTask(task: ActivityTaskV2) {
+    setCreatedTasks((current) => [task, ...current])
     setActiveV2(task)
     setOverlay('v2-detail')
   }
@@ -109,7 +115,7 @@ export default function App() {
     <PhoneFrame>
       {/* 全屏覆盖流程 */}
       {overlay === 'shake' && (
-        <ShakeBuddy onClose={() => setOverlay(null)} onPublished={() => setOverlay(null)} />
+        <ShakeBuddy onClose={() => setOverlay(null)} onPublished={publishTask} />
       )}
       {overlay === 'v2-detail' && activeV2 && (
         <TaskDetailV2 task={activeV2} onBack={() => setOverlay(null)} onRequest={() => setOverlay('v2-request')} />
@@ -148,6 +154,7 @@ export default function App() {
                 onShake={() => setOverlay('shake')}
                 onOpenProfile={() => setOverlay('profile')}
                 onOpenTask={openTaskV2}
+                createdTasks={createdTasks}
               />
             )}
             {tab === 'pending' && (

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { ArrowLeft, CalendarClock, MapPin, Sparkles, Users } from 'lucide-react'
+import type { ActivityTaskV2 } from '../../types/profile'
 
 interface ShakeBuddyProps {
   onClose: () => void
-  onPublished: () => void
+  onPublished: (task: ActivityTaskV2) => void
 }
 
 const activityTypes = ['喝咖啡', '自习', '运动', '吃饭', '看展', '音乐', '随便走走']
@@ -15,6 +16,30 @@ export default function ShakeBuddy({ onClose, onPublished }: ShakeBuddyProps) {
   const [place, setPlace] = useState('学校附近')
   const [groupSize, setGroupSize] = useState(2)
   const [prompt, setPrompt] = useState('想找一个不太尬、可以一起把这件小事做掉的人。')
+
+  function publish() {
+    onPublished({
+      id: `draft-${Date.now()}`,
+      title: `${timeWindow}想找人一起${activity}`,
+      activityNodeId: activityNodeFromLabel(activity),
+      hostProfileId: 'me',
+      hostAlias: '你发起的',
+      hostPhotoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=240&q=80',
+      hostMatchReason: '这是你刚刚摇出来的活动。别人会先看到模糊头像和这句邀请，不会看到完整资料。',
+      place,
+      fuzzyArea: place.includes('南') ? '南区附近' : place.includes('图书馆') ? '教学区' : '校园附近',
+      startsAtLabel: timeWindow,
+      expiresAtLabel: timeWindow === '现在' ? '剩 45 分钟' : '48 小时内消失',
+      expiresInSec: timeWindow === '现在' ? 45 * 60 : 48 * 60 * 60,
+      desiredGroupSize: groupSize,
+      currentGroupSize: 1,
+      desiredPersonHint: prompt,
+      compatibilityReason: `哒哒会把这张卡优先推给附近也想${activity}、时间窗口相近的人。`,
+      locked: false,
+      mapX: 52,
+      mapY: 55,
+    })
+  }
 
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-[#f7f2eb] px-5 pb-safe-b pt-safe-t text-[#1f1b18]">
@@ -84,7 +109,7 @@ export default function ShakeBuddy({ onClose, onPublished }: ShakeBuddyProps) {
       <footer className="pt-3">
         <button
           type="button"
-          onClick={onPublished}
+          onClick={publish}
           className="h-14 w-full rounded-full bg-[#1f1b18] text-[15px] font-semibold text-white shadow-[0_18px_45px_rgba(31,27,24,0.2)]"
         >
           发布到附近雷达
@@ -92,6 +117,16 @@ export default function ShakeBuddy({ onClose, onPublished }: ShakeBuddyProps) {
       </footer>
     </main>
   )
+}
+
+function activityNodeFromLabel(label: string) {
+  if (label.includes('咖啡')) return 'coffee'
+  if (label.includes('自习')) return 'library-study'
+  if (label.includes('运动')) return 'running'
+  if (label.includes('音乐')) return 'music'
+  if (label.includes('看展')) return 'exhibitions'
+  if (label.includes('走')) return 'city-walk'
+  return 'food-drink'
 }
 
 function Card({ label, icon, children }: { label: string; icon: React.ReactNode; children: React.ReactNode }) {

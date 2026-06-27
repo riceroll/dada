@@ -22,10 +22,12 @@ interface ExploreProps {
   onShake: () => void
   onOpenProfile: () => void
   onOpenTask: (task: ActivityTaskV2) => void
+  createdTasks?: ActivityTaskV2[]
 }
 
-export default function Explore({ onShake, onOpenProfile, onOpenTask }: ExploreProps) {
+export default function Explore({ onShake, onOpenProfile, onOpenTask, createdTasks = [] }: ExploreProps) {
   const [view, setView] = useState<'map' | 'list'>('map')
+  const tasks = [...createdTasks, ...mockActivityTasksV2]
 
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#f7f2eb] text-[#1f1b18]">
@@ -56,18 +58,18 @@ export default function Explore({ onShake, onOpenProfile, onOpenTask }: ExploreP
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Nearby radar</p>
             <h1 className="mt-1 text-[22px] font-semibold leading-[1.08] tracking-[-0.02em]">今晚附近缺一个你。</h1>
           </div>
-            <button
-              type="button"
-              onClick={onShake}
-              className="mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1f1b18] text-white shadow-[0_18px_45px_rgba(31,27,24,0.2)]"
-              aria-label="摇个搭子"
-            >
-              <Plus size={20} strokeWidth={2.5} />
-            </button>
+          <button
+            type="button"
+            onClick={onShake}
+            className="mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1f1b18] text-white shadow-[0_18px_45px_rgba(31,27,24,0.2)]"
+            aria-label="摇个搭子"
+          >
+            <Plus size={20} strokeWidth={2.5} />
+          </button>
         </div>
       </header>
 
-      {view === 'map' ? <ExploreMap onShake={onShake} onOpenTask={onOpenTask} /> : <ExploreList onOpenTask={onOpenTask} />}
+      {view === 'map' ? <ExploreMap tasks={tasks} onShake={onShake} onOpenTask={onOpenTask} /> : <ExploreList tasks={tasks} onOpenTask={onOpenTask} />}
     </main>
   )
 }
@@ -84,7 +86,7 @@ function ViewButton({ active, label, onClick }: { active: boolean; label: string
   )
 }
 
-function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: ActivityTaskV2) => void }) {
+function ExploreMap({ tasks, onOpenTask }: { tasks: ActivityTaskV2[]; onShake: () => void; onOpenTask: (task: ActivityTaskV2) => void }) {
   const [selectedTask, setSelectedTask] = useState<ActivityTaskV2 | null>(null)
   const [zoom, setZoom] = useState(1.04)
   const [pan, setPan] = useState({ x: 0, y: 0 })
@@ -144,7 +146,7 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
             <path d="M-22 470 C96 410 198 436 348 386" fill="none" stroke="#fffaf1" strokeOpacity="0.68" strokeWidth="15" strokeLinecap="round" />
           </svg>
 
-          {mockActivityTasksV2.map((task) => (
+          {tasks.map((task) => (
             <MapMarker
               key={task.id}
               task={task}
@@ -203,11 +205,11 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
   )
 }
 
-function ExploreList({ onOpenTask }: { onOpenTask: (task: ActivityTaskV2) => void }) {
+function ExploreList({ tasks, onOpenTask }: { tasks: ActivityTaskV2[]; onOpenTask: (task: ActivityTaskV2) => void }) {
   return (
     <section className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
       <div className="space-y-2.5 pb-4">
-        {mockActivityTasksV2.map((task) => (
+        {tasks.map((task) => (
           <ActivityCard key={task.id} task={task} onOpenTask={onOpenTask} />
         ))}
       </div>
