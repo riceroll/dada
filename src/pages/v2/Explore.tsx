@@ -248,7 +248,7 @@ function ActivityCard({
   return (
     <article className={`paper-card rounded-[20px] p-3 ${task.locked ? 'opacity-78' : ''}`}>
       <div className="flex items-start gap-2.5">
-        <ActivityMark activityNodeId={task.activityNodeId} />
+        <ActivityMark task={task} />
         <div className="min-w-0 flex-1">
           <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-[#8a7e74]">
             <MapPin size={12} />
@@ -292,25 +292,30 @@ function InfoPill({ icon, label }: { icon: React.ReactNode; label: string }) {
   )
 }
 
-function ActivityMark({ activityNodeId }: { activityNodeId: string }) {
-  const tone = activityTone(activityNodeId)
+function ActivityMark({ task }: { task: ActivityTaskV2 }) {
+  const tone = activityTone(`${task.id}-${task.title}-${task.activityNodeId}`)
   return (
     <div className={`relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#1f1b18]/8 bg-gradient-to-br ${tone.bg} shadow-[0_10px_22px_rgba(31,27,24,0.07)]`}>
       <span className={`absolute -right-3 -top-3 h-8 w-8 rounded-full ${tone.blob} opacity-60 blur-sm`} />
       <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_48%,rgba(31,27,24,0.05))]" />
       <span className="relative z-10" style={{ color: tone.color }}>
-        <ActivityGlyph activityNodeId={activityNodeId} size={18} />
+        <ActivityGlyph activityNodeId={task.activityNodeId} size={18} />
       </span>
     </div>
   )
 }
 
-function activityTone(activityNodeId: string) {
-  if (activityNodeId === 'coffee') return { bg: 'from-[#EDE3D6] to-[#C8B7A4]', blob: 'bg-[#F5E7C7]', color: '#74685D' }
-  if (activityNodeId === 'library-study') return { bg: 'from-[#E8E6DC] to-[#B9C1B1]', blob: 'bg-[#DDE7D6]', color: '#667365' }
-  if (activityNodeId === 'running') return { bg: 'from-[#E5E1D8] to-[#B7C4C6]', blob: 'bg-[#D6E1E2]', color: '#66787A' }
-  if (activityNodeId === 'piano' || activityNodeId === 'music') return { bg: 'from-[#EAE2DF] to-[#C9B8C1]', blob: 'bg-[#ECD6DC]', color: '#766B72' }
-  return { bg: 'from-[#ECE6DC] to-[#CFC8B8]', blob: 'bg-[#F2E8CC]', color: '#746D63' }
+function activityTone(seed: string) {
+  const tones = [
+    { bg: 'from-[#EDE3D6] to-[#C8B7A4]', blob: 'bg-[#F5E7C7]', color: '#74685D' },
+    { bg: 'from-[#E8E6DC] to-[#B9C1B1]', blob: 'bg-[#DDE7D6]', color: '#667365' },
+    { bg: 'from-[#E5E1D8] to-[#B7C4C6]', blob: 'bg-[#D6E1E2]', color: '#66787A' },
+    { bg: 'from-[#EAE2DF] to-[#C9B8C1]', blob: 'bg-[#ECD6DC]', color: '#766B72' },
+    { bg: 'from-[#ECE6DC] to-[#CFC8B8]', blob: 'bg-[#F2E8CC]', color: '#746D63' },
+    { bg: 'from-[#E6E0D8] to-[#BFC0AD]', blob: 'bg-[#D6D6B9]', color: '#71745D' },
+  ]
+  const index = Math.abs(seed.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)) % tones.length
+  return tones[index]
 }
 
 function ActivityGlyph({ activityNodeId, size }: { activityNodeId: string; size: number }) {
