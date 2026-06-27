@@ -41,10 +41,7 @@ export default function Explore({ onShake, onOpenProfile, onOpenTask, createdTas
           >
             <span className="h-5 w-5 rounded-full bg-[radial-gradient(circle_at_32%_28%,#fff7df,#b9d5c2_45%,#1f1b18_88%)]" />
           </button>
-          <div className="flex rounded-full border border-[#1f1b18]/10 bg-white/70 p-1 shadow-[0_10px_24px_rgba(31,27,24,0.06)]">
-            <ViewButton active={view === 'map'} onClick={() => setView('map')} label="地图" />
-            <ViewButton active={view === 'list'} onClick={() => setView('list')} label="列表" />
-          </div>
+          <ViewSwitch view={view} onChange={setView} />
           <button
             type="button"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70 shadow-[0_10px_24px_rgba(31,27,24,0.08)]"
@@ -74,15 +71,54 @@ export default function Explore({ onShake, onOpenProfile, onOpenTask, createdTas
   )
 }
 
-function ViewButton({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
+function ViewSwitch({ view, onChange }: { view: 'map' | 'list'; onChange: (view: 'map' | 'list') => void }) {
+  const dragRef = useRef(false)
+
+  function updateByPoint(clientX: number, element: HTMLElement) {
+    const rect = element.getBoundingClientRect()
+    const next = clientX < rect.left + rect.width / 2 ? 'map' : 'list'
+    if (next !== view) onChange(next)
+  }
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`h-8 rounded-full px-4 text-xs font-semibold transition ${active ? 'bg-[#1f1b18] text-white' : 'text-[#6f655d]'}`}
+    <div
+      className="relative grid h-10 w-32 touch-none grid-cols-2 rounded-full border border-[#1f1b18]/10 bg-white/70 p-1 shadow-[0_10px_24px_rgba(31,27,24,0.06)]"
+      onPointerDown={(event) => {
+        dragRef.current = true
+        event.currentTarget.setPointerCapture(event.pointerId)
+        updateByPoint(event.clientX, event.currentTarget)
+      }}
+      onPointerMove={(event) => {
+        if (!dragRef.current) return
+        updateByPoint(event.clientX, event.currentTarget)
+      }}
+      onPointerUp={(event) => {
+        dragRef.current = false
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      }}
+      onPointerCancel={() => {
+        dragRef.current = false
+      }}
     >
-      {label}
-    </button>
+      <span
+        className="pointer-events-none absolute bottom-1 top-1 w-[calc(50%-4px)] rounded-full bg-[#1f1b18] shadow-[0_10px_22px_rgba(31,27,24,0.18)] transition-transform duration-200 ease-out"
+        style={{ transform: `translateX(${view === 'map' ? '4px' : 'calc(100% + 4px)'})` }}
+      />
+      <button
+        type="button"
+        onClick={() => onChange('map')}
+        className={`relative z-10 rounded-full text-xs font-semibold transition-colors ${view === 'map' ? 'text-white' : 'text-[#6f655d]'}`}
+      >
+        地图
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange('list')}
+        className={`relative z-10 rounded-full text-xs font-semibold transition-colors ${view === 'list' ? 'text-white' : 'text-[#6f655d]'}`}
+      >
+        列表
+      </button>
+    </div>
   )
 }
 
