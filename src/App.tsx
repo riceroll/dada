@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Task } from './types'
-import type { GeneratedProfile, OnboardingProfileDraft } from './types/profile'
+import type { ActivityTaskV2, GeneratedProfile, OnboardingProfileDraft } from './types/profile'
 import PhoneFrame from './components/PhoneFrame'
 import TabBar, { type Tab } from './components/TabBar'
 import PostTask from './pages/PostTask'
@@ -18,10 +18,25 @@ import CompanionV2 from './pages/v2/CompanionV2'
 import ChatsV2 from './pages/v2/ChatsV2'
 import BuddiesV2 from './pages/v2/BuddiesV2'
 import ProfileV2 from './pages/v2/ProfileV2'
+import TaskDetailV2 from './pages/v2/TaskDetailV2'
+import RequestMatchingV2 from './pages/v2/RequestMatchingV2'
+import MatchChatV2 from './pages/v2/MatchChatV2'
+import MeetingV2 from './pages/v2/MeetingV2'
 import { pendingTasks, chatThreads, tasks } from './data'
 
 // 覆盖在 Tab 之上的全屏流程
-type Overlay = 'post' | 'shake' | 'detail' | 'matching' | 'progress' | 'profile' | null
+type Overlay =
+  | 'post'
+  | 'shake'
+  | 'detail'
+  | 'v2-detail'
+  | 'matching'
+  | 'v2-request'
+  | 'v2-match-chat'
+  | 'progress'
+  | 'v2-meeting'
+  | 'profile'
+  | null
 type IntroScreen = 'splash' | 'onboarding' | 'reveal' | 'done'
 
 export default function App() {
@@ -30,6 +45,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay>(null)
   const [active, setActive] = useState<Task | null>(null)
+  const [activeV2, setActiveV2] = useState<ActivityTaskV2 | null>(null)
   const [generatedProfile, setGeneratedProfile] = useState<GeneratedProfile | null>(null)
   const [dadaEventReady, setDadaEventReady] = useState(false)
   const [dadaEventOpened, setDadaEventOpened] = useState(false)
@@ -59,6 +75,10 @@ export default function App() {
   function accept(t: Task) {
     setActive(t)
     setOverlay('matching')
+  }
+  function openTaskV2(task: ActivityTaskV2) {
+    setActiveV2(task)
+    setOverlay('v2-detail')
   }
 
   function finishOnboarding() {
@@ -106,12 +126,30 @@ export default function App() {
       {overlay === 'detail' && active && (
         <TaskDetail task={active} onBack={() => setOverlay(null)} onAccepted={accept} />
       )}
+      {overlay === 'v2-detail' && activeV2 && (
+        <TaskDetailV2 task={activeV2} onBack={() => setOverlay(null)} onRequest={() => setOverlay('v2-request')} />
+      )}
       {overlay === 'matching' && active && (
         <Matching task={active} onMatched={() => setOverlay('progress')} />
+      )}
+      {overlay === 'v2-request' && activeV2 && (
+        <RequestMatchingV2 task={activeV2} onMatched={() => setOverlay('v2-match-chat')} />
+      )}
+      {overlay === 'v2-match-chat' && activeV2 && (
+        <MatchChatV2 task={activeV2} onBack={() => setOverlay(null)} onMeet={() => setOverlay('v2-meeting')} />
       )}
       {overlay === 'progress' && active && (
         <InProgress
           task={active}
+          onFinish={() => {
+            setOverlay(null)
+            setTab('buddies')
+          }}
+        />
+      )}
+      {overlay === 'v2-meeting' && activeV2 && (
+        <MeetingV2
+          task={activeV2}
           onFinish={() => {
             setOverlay(null)
             setTab('buddies')
@@ -133,7 +171,11 @@ export default function App() {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-hidden flex flex-col">
             {tab === 'home' && (
-              <Explore onShake={() => setOverlay('shake')} onOpenProfile={() => setOverlay('profile')} />
+              <Explore
+                onShake={() => setOverlay('shake')}
+                onOpenProfile={() => setOverlay('profile')}
+                onOpenTask={openTaskV2}
+              />
             )}
             {tab === 'pending' && (
               <PendingV2

@@ -19,9 +19,10 @@ import type { ActivityTaskV2 } from '../../types/profile'
 interface ExploreProps {
   onShake: () => void
   onOpenProfile: () => void
+  onOpenTask: (task: ActivityTaskV2) => void
 }
 
-export default function Explore({ onShake, onOpenProfile }: ExploreProps) {
+export default function Explore({ onShake, onOpenProfile, onOpenTask }: ExploreProps) {
   const [view, setView] = useState<'map' | 'list'>('map')
 
   return (
@@ -64,7 +65,7 @@ export default function Explore({ onShake, onOpenProfile }: ExploreProps) {
         </div>
       </header>
 
-      {view === 'map' ? <ExploreMap onShake={onShake} /> : <ExploreList />}
+      {view === 'map' ? <ExploreMap onShake={onShake} onOpenTask={onOpenTask} /> : <ExploreList onOpenTask={onOpenTask} />}
     </main>
   )
 }
@@ -81,7 +82,7 @@ function ViewButton({ active, label, onClick }: { active: boolean; label: string
   )
 }
 
-function ExploreMap({ onShake }: { onShake: () => void }) {
+function ExploreMap({ onShake, onOpenTask }: { onShake: () => void; onOpenTask: (task: ActivityTaskV2) => void }) {
   const featured = mockActivityTasksV2[0]
 
   return (
@@ -115,19 +116,19 @@ function ExploreMap({ onShake }: { onShake: () => void }) {
         </div>
 
         <div className="absolute bottom-4 left-4 right-4">
-          <ActivityCard task={featured} compact onShake={onShake} />
+          <ActivityCard task={featured} compact onShake={onShake} onOpenTask={onOpenTask} />
         </div>
       </div>
     </section>
   )
 }
 
-function ExploreList() {
+function ExploreList({ onOpenTask }: { onOpenTask: (task: ActivityTaskV2) => void }) {
   return (
     <section className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 no-scrollbar">
       <div className="space-y-3 pb-4">
         {mockActivityTasksV2.map((task) => (
-          <ActivityCard key={task.id} task={task} />
+          <ActivityCard key={task.id} task={task} onOpenTask={onOpenTask} />
         ))}
       </div>
     </section>
@@ -145,7 +146,17 @@ function MapMarker({ task }: { task: ActivityTaskV2 }) {
   )
 }
 
-function ActivityCard({ task, compact = false, onShake }: { task: ActivityTaskV2; compact?: boolean; onShake?: () => void }) {
+function ActivityCard({
+  task,
+  compact = false,
+  onShake,
+  onOpenTask,
+}: {
+  task: ActivityTaskV2
+  compact?: boolean
+  onShake?: () => void
+  onOpenTask: (task: ActivityTaskV2) => void
+}) {
   return (
     <article className={`rounded-[28px] border border-[#1f1b18]/10 bg-white/78 p-4 shadow-[0_20px_55px_rgba(31,27,24,0.1)] backdrop-blur ${task.locked ? 'border-dashed opacity-78' : ''}`}>
       <div className="flex items-start gap-3">
@@ -171,12 +182,12 @@ function ActivityCard({ task, compact = false, onShake }: { task: ActivityTaskV2
       <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-[#f7f2eb] px-4 py-3">
         <p className="min-w-0 flex-1 text-sm leading-5 text-[#5f5750]">{task.desiredPersonHint}</p>
         {onShake ? (
-          <button type="button" onClick={onShake} className="flex h-9 shrink-0 items-center gap-1 rounded-full bg-[#1f1b18] px-3 text-xs font-semibold text-white">
-            摇一个
+          <button type="button" onClick={() => onOpenTask(task)} className="flex h-9 shrink-0 items-center gap-1 rounded-full bg-[#1f1b18] px-3 text-xs font-semibold text-white">
+            看详情
             <ArrowUpRight size={13} />
           </button>
         ) : (
-          <button type="button" className="flex h-9 shrink-0 items-center gap-1 rounded-full border border-[#1f1b18]/10 bg-white px-3 text-xs font-semibold text-[#1f1b18]">
+          <button type="button" onClick={() => onOpenTask(task)} className="flex h-9 shrink-0 items-center gap-1 rounded-full border border-[#1f1b18]/10 bg-white px-3 text-xs font-semibold text-[#1f1b18]">
             看详情
             <ArrowUpRight size={13} />
           </button>
