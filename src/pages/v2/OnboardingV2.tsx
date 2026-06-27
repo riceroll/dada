@@ -21,12 +21,7 @@ const mbtiOptions: { id: MbtiDimension; first: string; second: string; unknown: 
 const levelForCategory: InterestLevel = 'interested'
 const levelForLeaf: InterestLevel = 'willing_to_try'
 
-const avatarPresets = [
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=240&q=80',
-]
+const avatarPresets = ['orb-sun', 'orb-moss', 'orb-ink', 'orb-rose']
 
 interface OnboardingV2Props {
   onDone: (draft: OnboardingProfileDraft) => void
@@ -226,16 +221,16 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
           <div className="space-y-7">
             <StepTitle eyebrow="Avatar" title="选一个头像，也可以先跳过。" desc="匹配前默认会被模糊处理。这里先决定你的资料卡大概长什么样。" />
             <div className="grid grid-cols-4 gap-3">
-              {avatarPresets.map((avatarUrl) => (
+              {avatarPresets.map((avatarId) => (
                 <button
                   type="button"
-                  key={avatarUrl}
-                  onClick={() => setDraft((current) => ({ ...current, media: { ...current.media, avatarUrl } }))}
+                  key={avatarId}
+                  onClick={() => setDraft((current) => ({ ...current, media: { ...current.media, avatarUrl: avatarId } }))}
                   className={`aspect-square overflow-hidden rounded-[22px] border transition ${
-                    draft.media.avatarUrl === avatarUrl ? 'border-[#1f1b18] p-1' : 'border-[#1f1b18]/10'
+                    draft.media.avatarUrl === avatarId ? 'border-[#1f1b18] p-1' : 'border-[#1f1b18]/10'
                   }`}
                 >
-                  <img src={avatarUrl} alt="头像选项" className="h-full w-full rounded-[18px] object-cover" />
+                  <AbstractAvatar avatarId={avatarId} />
                 </button>
               ))}
             </div>
@@ -394,7 +389,11 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-[#1f1b18] text-white">
                   {draft.media.avatarUrl ? (
-                    <img src={draft.media.avatarUrl} alt="资料头像预览" className="h-full w-full object-cover blur-[2px]" />
+                    isAbstractAvatar(draft.media.avatarUrl) ? (
+                      <AbstractAvatar avatarId={draft.media.avatarUrl} blurred />
+                    ) : (
+                      <img src={draft.media.avatarUrl} alt="资料头像预览" className="h-full w-full object-cover blur-[2px]" />
+                    )
                   ) : (
                     <WandSparkles size={20} />
                   )}
@@ -453,6 +452,33 @@ function StepTitle({ eyebrow, title, desc }: { eyebrow: string; title: string; d
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">{eyebrow}</p>
       <h1 className="text-[34px] font-semibold leading-[1.05] tracking-[-0.02em] text-[#1f1b18]">{title}</h1>
       <p className="text-[15px] leading-7 text-[#5f5750]">{desc}</p>
+    </div>
+  )
+}
+
+function isAbstractAvatar(value: string) {
+  return avatarPresets.includes(value)
+}
+
+function AbstractAvatar({ avatarId, blurred = false }: { avatarId: string; blurred?: boolean }) {
+  const styleById: Record<string, string> = {
+    'orb-sun': 'from-[#fff1b8] via-[#efb85d] to-[#2a211b]',
+    'orb-moss': 'from-[#f8f0d5] via-[#a9c9ae] to-[#23322b]',
+    'orb-ink': 'from-[#e6e0d7] via-[#7e8791] to-[#1c1c22]',
+    'orb-rose': 'from-[#ffe1d8] via-[#d9877d] to-[#2b1f25]',
+  }
+  const blobById: Record<string, string> = {
+    'orb-sun': 'bg-[#f7d67b] left-[18%] top-[18%]',
+    'orb-moss': 'bg-[#d8efd8] right-[16%] top-[20%]',
+    'orb-ink': 'bg-[#f4f0e8] left-[26%] bottom-[18%]',
+    'orb-rose': 'bg-[#ffd4c8] right-[20%] bottom-[20%]',
+  }
+
+  return (
+    <div className={`relative h-full w-full overflow-hidden rounded-[18px] bg-gradient-to-br ${styleById[avatarId] ?? styleById['orb-sun']} ${blurred ? 'blur-[2px]' : ''}`}>
+      <span className={`absolute h-1/3 w-1/3 rounded-full ${blobById[avatarId] ?? blobById['orb-sun']} opacity-80 blur-sm`} />
+      <span className="absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/28 bg-white/10" />
+      <span className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(255,255,255,0.42),transparent_28%),linear-gradient(135deg,transparent,rgba(0,0,0,0.22))]" />
     </div>
   )
 }
