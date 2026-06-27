@@ -239,7 +239,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 </button>
               ))}
             </div>
-            <label className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-[24px] border border-dashed border-[#1f1b18]/18 bg-white/60 px-4 text-center">
+            <label className="paper-card flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-[22px] px-4 text-center">
               <input
                 type="file"
                 accept="image/*"
@@ -275,7 +275,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 return (
                   <label
                     key={slot}
-                    className="relative flex aspect-[3/4] cursor-pointer items-center justify-center overflow-hidden rounded-[22px] border border-dashed border-[#1f1b18]/16 bg-white/62 text-center text-xs font-semibold text-[#8a7e74]"
+                    className="paper-card relative flex aspect-[3/4] cursor-pointer items-center justify-center overflow-hidden rounded-[20px] text-center text-xs font-semibold text-[#8a7e74]"
                   >
                     <input
                       type="file"
@@ -301,7 +301,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 )
               })}
             </div>
-            <div className="rounded-[22px] border border-[#1f1b18]/10 bg-white/62 p-4 text-[13px] leading-6 text-[#5f5750]">
+            <div className="paper-card rounded-[20px] p-4 text-[13px] leading-6 text-[#5f5750]">
               建议放能表达生活状态的图，不需要正脸。搭成之前，系统可以只展示模糊预览。
             </div>
             {draft.media.galleryUrls.length > 0 && (
@@ -390,7 +390,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
         {step === 6 && (
           <div className="space-y-7">
             <StepTitle eyebrow="Generated profile" title="哒哒先拼了一版你。" desc="这只是草稿，之后会接真正的 AI profile 生成。现在你可以先看匹配方向准不准。" />
-            <div className="rounded-[30px] border border-[#1f1b18]/10 bg-white/75 p-5 shadow-[0_24px_60px_rgba(31,27,24,0.08)]">
+            <div className="paper-card rounded-[26px] p-5">
               <div className="mb-5 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-[#1f1b18] text-white">
                   {draft.media.avatarUrl ? (

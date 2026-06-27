@@ -25,9 +25,9 @@ export default function Splash({ onContinue }: SplashProps) {
         <div className="absolute left-[-18%] top-12 h-72 w-72 rounded-full bg-[#f2c46d]/35 blur-3xl" />
         <div className="absolute right-[-24%] top-52 h-80 w-80 rounded-full bg-[#adcfb8]/45 blur-3xl" />
         <div className="absolute bottom-[-18%] left-10 h-72 w-72 rounded-full bg-[#df8f83]/30 blur-3xl" />
-        <div className="absolute inset-x-5 bottom-44 h-px bg-[#1f1b18]/10" />
-        <div className="absolute bottom-44 left-8 h-28 w-px rotate-12 bg-[#1f1b18]/10" />
-        <div className="absolute bottom-44 right-16 h-32 w-px -rotate-12 bg-[#1f1b18]/10" />
+        <div className="absolute bottom-28 left-[-10%] h-52 w-[120%] rounded-[48%] border border-[#1f1b18]/[0.045]" />
+        <div className="absolute bottom-16 left-[8%] h-40 w-[84%] rounded-[50%] border border-white/45" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#f7f2eb] via-[#f7f2eb]/74 to-transparent" />
       </div>
 
       <section className="relative z-10 flex flex-1 flex-col justify-between">
@@ -38,10 +38,12 @@ export default function Splash({ onContinue }: SplashProps) {
 
         <div className="space-y-8">
           <div className="relative mx-auto h-56 w-56">
-            <div className="absolute inset-8 animate-[pulse_4s_ease-in-out_infinite] rounded-full bg-[#1f1b18] shadow-[0_30px_90px_rgba(31,27,24,0.24)]" />
-            <div className="absolute inset-12 rounded-full bg-[radial-gradient(circle_at_32%_26%,#fff7df_0,#f3c56d_23%,#b9d5c2_47%,#1f1b18_79%)] opacity-95" />
-            <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/35 bg-white/10 blur-[1px]" />
-            <div className="absolute bottom-10 left-12 flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 backdrop-blur">
+            <div className="absolute inset-3 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(31,27,24,0.12),transparent_62%)] blur-2xl" />
+            <div className="absolute inset-7 animate-[pulse_4.6s_ease-in-out_infinite] rounded-full border border-white/55 bg-white/15 shadow-[0_28px_76px_rgba(31,27,24,0.12)] backdrop-blur-sm" />
+            <div className="absolute inset-10 rounded-full bg-[radial-gradient(circle_at_32%_24%,#fff8df_0,#f1c36d_22%,#bdd8c6_46%,#74685f_72%,#211c18_100%)] shadow-[inset_18px_-22px_34px_rgba(31,27,24,0.28),inset_-12px_12px_30px_rgba(255,255,255,0.22)]" />
+            <div className="absolute inset-[52px] rounded-full bg-[radial-gradient(circle_at_34%_24%,rgba(255,255,255,0.48),transparent_28%),linear-gradient(135deg,transparent,rgba(255,255,255,0.08))]" />
+            <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/[0.035] blur-[0.5px]" />
+            <div className="absolute bottom-10 left-12 flex h-9 w-9 items-center justify-center rounded-full border border-white/45 bg-white/35 shadow-[0_10px_30px_rgba(31,27,24,0.1)] backdrop-blur">
               <Sparkles size={16} />
             </div>
           </div>
@@ -61,7 +63,7 @@ export default function Splash({ onContinue }: SplashProps) {
           <button
             type="button"
             onClick={() => setAccepted((value) => !value)}
-            className="flex w-full items-start gap-3 rounded-[18px] border border-[#1f1b18]/10 bg-white/55 p-4 text-left shadow-[0_18px_45px_rgba(31,27,24,0.08)] backdrop-blur"
+            className="paper-card flex w-full items-start gap-3 rounded-[18px] p-4 text-left"
           >
             <span
               className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition ${
