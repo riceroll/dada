@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Clock3, Compass, MessageCircle, Orbit, UsersRound, type LucideIcon } from 'lucide-react'
 
 export type Tab = 'home' | 'pending' | 'companion' | 'chats' | 'buddies'
@@ -23,9 +24,45 @@ export default function TabBar({
   chatBadge?: number
   companionPulse?: boolean
 }) {
+  const dragRef = useRef<{ startX: number; active: boolean } | null>(null)
+  const suppressClickRef = useRef(false)
+
+  function changeByPoint(clientX: number, element: HTMLElement) {
+    const rect = element.getBoundingClientRect()
+    const ratio = Math.min(0.999, Math.max(0, (clientX - rect.left) / rect.width))
+    const index = Math.floor(ratio * items.length)
+    const next = items[index]?.key
+    if (next && next !== active) onChange(next)
+  }
+
   return (
     <nav className="shrink-0 border-t border-[#1f1b18]/8 bg-[#f7f2eb]/92 px-3 pb-safe-b pt-2 shadow-[0_-18px_45px_rgba(31,27,24,0.08)] backdrop-blur-xl">
-      <div className="grid grid-cols-5 gap-1 rounded-[28px] border border-[#1f1b18]/10 bg-white/70 p-1.5">
+      <div
+        className="grid touch-none grid-cols-5 gap-1 rounded-[28px] border border-[#1f1b18]/10 bg-white/70 p-1.5"
+        onPointerDown={(event) => {
+          dragRef.current = { startX: event.clientX, active: true }
+          event.currentTarget.setPointerCapture(event.pointerId)
+          changeByPoint(event.clientX, event.currentTarget)
+        }}
+        onPointerMove={(event) => {
+          if (!dragRef.current?.active) return
+          if (Math.abs(event.clientX - dragRef.current.startX) > 6) suppressClickRef.current = true
+          changeByPoint(event.clientX, event.currentTarget)
+        }}
+        onPointerUp={(event) => {
+          dragRef.current = null
+          event.currentTarget.releasePointerCapture(event.pointerId)
+          window.setTimeout(() => {
+            suppressClickRef.current = false
+          }, 0)
+        }}
+        onPointerCancel={() => {
+          dragRef.current = null
+          window.setTimeout(() => {
+            suppressClickRef.current = false
+          }, 0)
+        }}
+      >
         {items.map((item) => {
           const Icon = item.icon
           const selected = active === item.key
@@ -36,7 +73,13 @@ export default function TabBar({
             <button
               type="button"
               key={item.key}
-              onClick={() => onChange(item.key)}
+              onClick={(event) => {
+                if (suppressClickRef.current) {
+                  event.preventDefault()
+                  return
+                }
+                onChange(item.key)
+              }}
               className={`relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-[22px] py-2 transition ${
                 selected ? 'bg-[#1f1b18] text-white shadow-[0_14px_35px_rgba(31,27,24,0.2)]' : 'text-[#867b72] active:bg-[#f7f2eb]'
               }`}
