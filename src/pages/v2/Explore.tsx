@@ -14,7 +14,6 @@ import {
   Search,
   Sparkles,
   Users,
-  X,
 } from 'lucide-react'
 import { lockedActivityPlaceholders, mockActivityTasksV2 } from '../../data/mockTasksV2'
 import type { ActivityTaskV2 } from '../../types/profile'
@@ -90,6 +89,7 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
   const [zoom, setZoom] = useState(1.04)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const dragRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
+  const movedRef = useRef(false)
 
   function setBoundedZoom(nextZoom: number) {
     setZoom(Math.min(1.85, Math.max(0.86, nextZoom)))
@@ -105,6 +105,7 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
       <div
         className="relative h-full cursor-grab touch-none overflow-hidden active:cursor-grabbing"
         onPointerDown={(event) => {
+          movedRef.current = false
           dragRef.current = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y }
           event.currentTarget.setPointerCapture(event.pointerId)
         }}
@@ -112,10 +113,14 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
           if (!dragRef.current) return
           const nextX = dragRef.current.panX + event.clientX - dragRef.current.x
           const nextY = dragRef.current.panY + event.clientY - dragRef.current.y
+          if (Math.abs(event.clientX - dragRef.current.x) + Math.abs(event.clientY - dragRef.current.y) > 6) {
+            movedRef.current = true
+          }
           setPan({ x: nextX, y: nextY })
         }}
         onPointerUp={() => {
           dragRef.current = null
+          if (!movedRef.current) setSelectedTask(null)
         }}
         onPointerCancel={() => {
           dragRef.current = null
@@ -158,12 +163,18 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
           ))}
         </div>
 
-        <div className="absolute left-4 right-4 top-4 flex items-center gap-2 rounded-full border border-[#1f1b18]/10 bg-white/78 px-4 py-3 text-sm text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
+        <div
+          className="absolute left-4 right-4 top-4 flex items-center gap-2 rounded-full border border-[#1f1b18]/10 bg-white/78 px-4 py-3 text-sm text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl"
+          onPointerDown={(event) => event.stopPropagation()}
+        >
           <Search size={16} />
           <span>同济大学 · 四平路校区附近</span>
         </div>
 
-        <div className="absolute right-4 top-[76px] flex flex-col overflow-hidden rounded-full border border-[#1f1b18]/10 bg-white/78 shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
+        <div
+          className="absolute right-4 top-[76px] flex flex-col overflow-hidden rounded-full border border-[#1f1b18]/10 bg-white/78 shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl"
+          onPointerDown={(event) => event.stopPropagation()}
+        >
           <button type="button" onClick={() => setBoundedZoom(zoom + 0.14)} className="grid h-10 w-10 place-items-center border-b border-[#1f1b18]/8">
             <Plus size={16} />
           </button>
@@ -176,15 +187,10 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
         </div>
 
         {selectedTask ? (
-          <div className="absolute bottom-4 left-4 right-4 animate-slide-up">
-            <button
-              type="button"
-              onClick={() => setSelectedTask(null)}
-              className="absolute -right-1 -top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-[#1f1b18] text-white shadow-[0_12px_28px_rgba(31,27,24,0.18)]"
-              aria-label="Close task card"
-            >
-              <X size={15} />
-            </button>
+          <div
+            className="absolute bottom-4 left-4 right-4 animate-slide-up"
+            onPointerDown={(event) => event.stopPropagation()}
+          >
             <ActivityCard task={selectedTask} compact onOpenTask={onOpenTask} />
           </div>
         ) : (
@@ -199,8 +205,8 @@ function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: Ac
 
 function ExploreList({ onOpenTask }: { onOpenTask: (task: ActivityTaskV2) => void }) {
   return (
-    <section className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 no-scrollbar">
-      <div className="space-y-3 pb-4">
+    <section className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
+      <div className="space-y-2.5 pb-4">
         {mockActivityTasksV2.map((task) => (
           <ActivityCard key={task.id} task={task} onOpenTask={onOpenTask} />
         ))}
@@ -238,36 +244,36 @@ function ActivityCard({
   onOpenTask: (task: ActivityTaskV2) => void
 }) {
   return (
-    <article className={`rounded-[28px] border border-[#1f1b18]/10 bg-white/78 p-4 shadow-[0_20px_55px_rgba(31,27,24,0.1)] backdrop-blur ${task.locked ? 'border-dashed opacity-78' : ''}`}>
-      <div className="flex items-start gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#1f1b18] text-white">
-          <ActivityGlyph activityNodeId={task.activityNodeId} size={21} />
+    <article className={`rounded-[22px] border border-[#1f1b18]/10 bg-white/80 p-3 shadow-[0_14px_36px_rgba(31,27,24,0.08)] backdrop-blur ${task.locked ? 'border-dashed opacity-78' : ''}`}>
+      <div className="flex items-start gap-2.5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[15px] bg-[#1f1b18] text-white">
+          <ActivityGlyph activityNodeId={task.activityNodeId} size={18} />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a7e74]">
+          <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-[#8a7e74]">
             <MapPin size={12} />
             <span>{task.fuzzyArea}</span>
             <span>·</span>
             <span>{task.expiresAtLabel}</span>
           </div>
-          <h2 className="text-[17px] font-semibold leading-snug tracking-[-0.01em] text-[#1f1b18]">{task.title}</h2>
-          {!compact && <p className="mt-2 text-sm leading-6 text-[#6f655d]">{task.compatibilityReason}</p>}
+          <h2 className="text-[15px] font-semibold leading-snug tracking-[-0.01em] text-[#1f1b18]">{task.title}</h2>
+          {!compact && <p className="mt-1.5 line-clamp-2 text-[13px] leading-5 text-[#6f655d]">{task.compatibilityReason}</p>}
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#6f655d]">
+      <div className="mt-3 grid grid-cols-3 gap-1.5 text-[11px] text-[#6f655d]">
         <InfoPill icon={<Users size={13} />} label={`${task.currentGroupSize}/${task.desiredGroupSize} 人`} />
         <InfoPill icon={<Map size={13} />} label={task.place} />
         <InfoPill icon={<Sparkles size={13} />} label={task.hostAlias} />
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-[#f7f2eb] px-4 py-3">
-        <p className="min-w-0 flex-1 text-sm leading-5 text-[#5f5750]">{task.desiredPersonHint}</p>
+      <div className="mt-3 flex items-center justify-between gap-2 rounded-[16px] bg-[#f7f2eb] px-3 py-2.5">
+        <p className="min-w-0 flex-1 truncate text-[13px] leading-5 text-[#5f5750]">{task.desiredPersonHint}</p>
         {onShake ? (
-          <button type="button" onClick={() => onOpenTask(task)} className="flex h-9 shrink-0 items-center gap-1 rounded-full bg-[#1f1b18] px-3 text-xs font-semibold text-white">
+          <button type="button" onClick={() => onOpenTask(task)} className="flex h-8 shrink-0 items-center gap-1 rounded-full bg-[#1f1b18] px-3 text-[11px] font-semibold text-white">
             看详情
             <ArrowUpRight size={13} />
           </button>
         ) : (
-          <button type="button" onClick={() => onOpenTask(task)} className="flex h-9 shrink-0 items-center gap-1 rounded-full border border-[#1f1b18]/10 bg-white px-3 text-xs font-semibold text-[#1f1b18]">
+          <button type="button" onClick={() => onOpenTask(task)} className="flex h-8 shrink-0 items-center gap-1 rounded-full border border-[#1f1b18]/10 bg-white px-3 text-[11px] font-semibold text-[#1f1b18]">
             看详情
             <ArrowUpRight size={13} />
           </button>
@@ -279,7 +285,7 @@ function ActivityCard({
 
 function InfoPill({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-1 rounded-full bg-[#f7f2eb] px-2.5 py-2">
+    <div className="flex min-w-0 items-center gap-1 rounded-full bg-[#f7f2eb] px-2 py-1.5">
       <span className="shrink-0">{icon}</span>
       <span className="truncate">{label}</span>
     </div>
