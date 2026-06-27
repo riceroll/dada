@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Task } from './types'
+import type { GeneratedProfile, OnboardingProfileDraft } from './types/profile'
 import PhoneFrame from './components/PhoneFrame'
 import TabBar, { type Tab } from './components/TabBar'
 import Home from './pages/Home'
@@ -13,16 +14,22 @@ import Onboarding from './pages/Onboarding'
 import Profile from './pages/Profile'
 import Companion from './pages/Companion'
 import Matching from './pages/Matching'
+import Splash from './pages/v2/Splash'
+import OnboardingV2 from './pages/v2/OnboardingV2'
+import ProfileReveal from './pages/v2/ProfileReveal'
 import { pendingTasks, chatThreads, tasks } from './data'
 
 // 覆盖在 Tab 之上的全屏流程
 type Overlay = 'post' | 'detail' | 'matching' | 'progress' | 'profile' | null
+type IntroScreen = 'splash' | 'onboarding' | 'reveal' | 'done'
 
 export default function App() {
   const [onboarded, setOnboarded] = useState(false)
+  const [introScreen, setIntroScreen] = useState<IntroScreen>('splash')
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay>(null)
   const [active, setActive] = useState<Task | null>(null)
+  const [generatedProfile, setGeneratedProfile] = useState<GeneratedProfile | null>(null)
   const [dadaEventReady, setDadaEventReady] = useState(false)
   const [dadaEventOpened, setDadaEventOpened] = useState(false)
   const dadaEventTimer = useRef<number | null>(null)
@@ -55,10 +62,16 @@ export default function App() {
 
   function finishOnboarding() {
     setOnboarded(true)
+    setIntroScreen('done')
     if (dadaEventTimer.current) window.clearTimeout(dadaEventTimer.current)
     dadaEventTimer.current = window.setTimeout(() => {
       setDadaEventReady(true)
     }, 5000)
+  }
+
+  function finishV2Onboarding(draft: OnboardingProfileDraft) {
+    setGeneratedProfile(draft.generatedProfile)
+    setIntroScreen('reveal')
   }
 
   function changeTab(next: Tab) {
@@ -68,11 +81,14 @@ export default function App() {
     }
   }
 
-  // 首次进入：哒哒聊天式 onboarding
+  // 首次进入：V2 splash + structured onboarding + reveal
   if (!onboarded) {
     return (
       <PhoneFrame>
-        <Onboarding onDone={finishOnboarding} />
+        {introScreen === 'splash' && <Splash onContinue={() => setIntroScreen('onboarding')} />}
+        {introScreen === 'onboarding' && <OnboardingV2 onDone={finishV2Onboarding} />}
+        {introScreen === 'reveal' && <ProfileReveal profile={generatedProfile} onDone={finishOnboarding} />}
+        {introScreen === 'done' && <Onboarding onDone={finishOnboarding} />}
       </PhoneFrame>
     )
   }
