@@ -3,7 +3,6 @@ import type { Task } from './types'
 import type { GeneratedProfile, OnboardingProfileDraft } from './types/profile'
 import PhoneFrame from './components/PhoneFrame'
 import TabBar, { type Tab } from './components/TabBar'
-import Home from './pages/Home'
 import PostTask from './pages/PostTask'
 import TaskDetail from './pages/TaskDetail'
 import InProgress from './pages/InProgress'
@@ -17,10 +16,12 @@ import Matching from './pages/Matching'
 import Splash from './pages/v2/Splash'
 import OnboardingV2 from './pages/v2/OnboardingV2'
 import ProfileReveal from './pages/v2/ProfileReveal'
+import Explore from './pages/v2/Explore'
+import ShakeBuddy from './pages/v2/ShakeBuddy'
 import { pendingTasks, chatThreads, tasks } from './data'
 
 // 覆盖在 Tab 之上的全屏流程
-type Overlay = 'post' | 'detail' | 'matching' | 'progress' | 'profile' | null
+type Overlay = 'post' | 'shake' | 'detail' | 'matching' | 'progress' | 'profile' | null
 type IntroScreen = 'splash' | 'onboarding' | 'reveal' | 'done'
 
 export default function App() {
@@ -99,6 +100,9 @@ export default function App() {
       {overlay === 'post' && (
         <PostTask onClose={() => setOverlay(null)} onPublished={() => setOverlay(null)} />
       )}
+      {overlay === 'shake' && (
+        <ShakeBuddy onClose={() => setOverlay(null)} onPublished={() => setOverlay(null)} />
+      )}
       {overlay === 'detail' && active && (
         <TaskDetail task={active} onBack={() => setOverlay(null)} onAccepted={accept} />
       )}
@@ -129,11 +133,7 @@ export default function App() {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-hidden flex flex-col">
             {tab === 'home' && (
-              <Home
-                onOpenTask={openTask}
-                onPost={() => setOverlay('post')}
-                onOpenProfile={() => setOverlay('profile')}
-              />
+              <Explore onShake={() => setOverlay('shake')} onOpenProfile={() => setOverlay('profile')} />
             )}
             {tab === 'pending' && (
               <Pending

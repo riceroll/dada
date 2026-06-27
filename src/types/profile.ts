@@ -80,6 +80,7 @@ export interface ActivityTaskV2 {
   title: string
   activityNodeId: string
   hostProfileId: string
+  hostAlias: string
   place: string
   fuzzyArea: string
   startsAtLabel: string
@@ -89,6 +90,8 @@ export interface ActivityTaskV2 {
   desiredPersonHint: string
   compatibilityReason: string
   locked: boolean
+  mapX: number
+  mapY: number
 }
 
 export type MatchPermissionKind = 'reveal_avatar' | 'open_chat' | 'confirm_place' | 'change_time'
