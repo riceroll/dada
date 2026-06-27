@@ -26,6 +26,7 @@ export default function TabBar({
 }) {
   const dragRef = useRef<{ startX: number; active: boolean } | null>(null)
   const suppressClickRef = useRef(false)
+  const activeIndex = Math.max(0, items.findIndex((item) => item.key === active))
 
   function changeByPoint(clientX: number, element: HTMLElement) {
     const rect = element.getBoundingClientRect()
@@ -38,7 +39,7 @@ export default function TabBar({
   return (
     <nav className="shrink-0 border-t border-[#1f1b18]/8 bg-[#f7f2eb]/92 px-3 pb-safe-b pt-2 shadow-[0_-18px_45px_rgba(31,27,24,0.08)] backdrop-blur-xl">
       <div
-        className="grid touch-none grid-cols-5 gap-1 rounded-[28px] border border-[#1f1b18]/10 bg-white/70 p-1.5"
+        className="relative grid touch-none grid-cols-5 gap-1 rounded-[28px] border border-[#1f1b18]/10 bg-white/70 p-1.5"
         onPointerDown={(event) => {
           dragRef.current = { startX: event.clientX, active: true }
           event.currentTarget.setPointerCapture(event.pointerId)
@@ -63,6 +64,13 @@ export default function TabBar({
           }, 0)
         }}
       >
+        <span
+          className="pointer-events-none absolute bottom-1.5 top-1.5 rounded-[22px] bg-[#1f1b18] shadow-[0_14px_35px_rgba(31,27,24,0.2)] transition-[left] duration-200 ease-out"
+          style={{
+            left: `calc(0.375rem + ${activeIndex} * ((100% - 1.75rem) / 5 + 0.25rem))`,
+            width: 'calc((100% - 1.75rem) / 5)',
+          }}
+        />
         {items.map((item) => {
           const Icon = item.icon
           const selected = active === item.key
@@ -80,8 +88,8 @@ export default function TabBar({
                 }
                 onChange(item.key)
               }}
-              className={`relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-[22px] py-2 transition ${
-                selected ? 'bg-[#1f1b18] text-white shadow-[0_14px_35px_rgba(31,27,24,0.2)]' : 'text-[#867b72] active:bg-[#f7f2eb]'
+              className={`relative z-10 flex min-w-0 flex-col items-center justify-center gap-1 rounded-[22px] py-2 transition-colors ${
+                selected ? 'text-white' : 'text-[#867b72] active:text-[#1f1b18]'
               }`}
             >
               {pulsing && <span className="pointer-events-none absolute inset-1 rounded-[20px] bg-[#df8f83]/20 animate-pulse" />}
