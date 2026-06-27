@@ -234,7 +234,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 </button>
               ))}
             </div>
-            <label className="paper-card flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-[22px] px-4 text-center">
+            <label className="media-card flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-[22px] px-4 text-center">
               <input
                 type="file"
                 accept="image/*"
@@ -270,7 +270,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 return (
                   <label
                     key={slot}
-                    className="paper-card relative flex aspect-[3/4] cursor-pointer items-center justify-center overflow-hidden rounded-[20px] text-center text-xs font-semibold text-[#8a7e74]"
+                    className="media-card relative flex aspect-[3/4] cursor-pointer items-center justify-center overflow-hidden rounded-[20px] text-center text-xs font-semibold text-[#8a7e74]"
                   >
                     <input
                       type="file"
@@ -296,7 +296,7 @@ export default function OnboardingV2({ onDone }: OnboardingV2Props) {
                 )
               })}
             </div>
-            <div className="paper-card rounded-[20px] p-4 text-[13px] leading-6 text-[#5f5750]">
+            <div className="media-card rounded-[20px] p-4 text-[13px] leading-6 text-[#5f5750]">
               建议放能表达生活状态的图，不需要正脸。搭成之前，系统可以只展示模糊预览。
             </div>
             {draft.media.galleryUrls.length > 0 && (

@@ -55,27 +55,27 @@ export default function CompanionV2({
 
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#f7f2eb] text-[#1f1b18]">
-      <header className="px-5 pb-4 pt-safe-t">
-        <div className="flex items-center gap-4">
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-[26px] bg-[#1f1b18] text-white shadow-[0_20px_55px_rgba(31,27,24,0.18)]">
-            <div className="h-9 w-9 rounded-full bg-[radial-gradient(circle_at_35%_25%,#fff7df,#b9d5c2_48%,#df8f83_82%)]" />
+      <header className="px-4 pb-3 pt-safe-t">
+        <div className="flex items-center gap-3">
+          <div className="paper-card relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[18px]">
+            <div className="h-7 w-7 rounded-full bg-[radial-gradient(circle_at_34%_24%,#fff7df,#b8c7b4_48%,#35332f_92%)] shadow-[inset_6px_-8px_14px_rgba(31,27,24,0.18)]" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Dada copilot</p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-[-0.02em]">哒哒</h1>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Dada copilot</p>
+            <h1 className="mt-0.5 text-[27px] font-semibold leading-[1.05] tracking-[-0.025em]">哒哒</h1>
           </div>
         </div>
       </header>
 
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-5 pb-4 no-scrollbar">
-        <div className="space-y-3 pb-4">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 no-scrollbar">
+        <div className="space-y-2.5 pb-4">
           {recommendedTask && (
             <button
               type="button"
               onClick={() => onOpenTask?.(recommendedTask)}
-              className="w-full rounded-[30px] border border-[#1f1b18]/10 bg-white/78 p-4 text-left shadow-[0_20px_55px_rgba(31,27,24,0.1)]"
+              className="paper-card w-full rounded-[20px] p-3.5 text-left"
             >
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#8a7e74]">
+              <div className="mb-2.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7e74]">
                 <Sparkles size={14} />
                 <span>刚刚替你捞到一个近的</span>
               </div>
@@ -90,7 +90,7 @@ export default function CompanionV2({
             </button>
           )}
 
-          <article className="rounded-[30px] border border-[#1f1b18]/10 bg-white/72 p-4 shadow-[0_18px_45px_rgba(31,27,24,0.07)]">
+          <article className="paper-card rounded-[20px] p-3.5">
             <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
               <WandSparkles size={16} />
               <span>今天的匹配判断</span>
@@ -103,7 +103,7 @@ export default function CompanionV2({
 
           {msgs.map((msg, index) => (
             <div key={`${msg.text}-${index}`} className={msg.from === 'me' ? 'flex justify-end' : 'flex justify-start'}>
-              <div className={`max-w-[82%] rounded-[22px] px-4 py-3 text-sm leading-6 ${msg.from === 'me' ? 'bg-[#1f1b18] text-white rounded-br-md' : 'border border-[#1f1b18]/10 bg-white/78 text-[#3a332e] rounded-bl-md'}`}>
+              <div className={`max-w-[82%] rounded-[20px] px-4 py-3 text-sm leading-6 ${msg.from === 'me' ? 'bg-[#1f1b18] text-white rounded-br-md' : 'paper-card text-[#3a332e] rounded-bl-md'}`}>
                 {msg.text}
               </div>
             </div>
@@ -111,10 +111,10 @@ export default function CompanionV2({
         </div>
       </div>
 
-      <footer className="border-t border-[#1f1b18]/8 bg-white/74 pb-safe-b pt-3 backdrop-blur-xl">
+      <footer className="border-t border-[#1f1b18]/8 bg-[#fffaf3]/78 pb-safe-b pt-3 backdrop-blur-xl">
         <div className="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar">
           {quicks.map((quick) => (
-            <button key={quick} type="button" onClick={() => reply(quick)} className="shrink-0 rounded-full bg-[#f7f2eb] px-4 py-2 text-xs font-semibold text-[#514941]">
+            <button key={quick} type="button" onClick={() => reply(quick)} className="shrink-0 rounded-full bg-[#f6f0e8]/70 px-4 py-2 text-xs font-semibold text-[#514941]">
               {quick}
             </button>
           ))}
@@ -125,7 +125,7 @@ export default function CompanionV2({
             onChange={(event) => setInput(event.target.value)}
             onKeyDown={(event) => event.key === 'Enter' && input.trim() && reply(input.trim())}
             placeholder="告诉哒哒你想搭什么"
-            className="h-12 flex-1 rounded-full border border-[#1f1b18]/10 bg-[#f7f2eb] px-4 text-sm outline-none placeholder:text-[#a89d94]"
+            className="h-12 flex-1 rounded-full border border-[#1f1b18]/10 bg-[#f6f0e8]/70 px-4 text-sm outline-none placeholder:text-[#a89d94]"
           />
           <button type="button" onClick={() => input.trim() && reply(input.trim())} className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1f1b18] text-white">
             <Send size={17} />
