@@ -1,17 +1,20 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   ArrowUpRight,
   Bell,
   BookOpen,
   Coffee,
   Dumbbell,
+  LocateFixed,
   Map,
   MapPin,
   Music2,
+  Minus,
   Plus,
   Search,
   Sparkles,
   Users,
+  X,
 } from 'lucide-react'
 import { lockedActivityPlaceholders, mockActivityTasksV2 } from '../../data/mockTasksV2'
 import type { ActivityTaskV2 } from '../../types/profile'
@@ -27,12 +30,12 @@ export default function Explore({ onShake, onOpenProfile, onOpenTask }: ExploreP
 
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#f7f2eb] text-[#1f1b18]">
-      <header className="px-5 pb-4 pt-safe-t">
-        <div className="mb-5 flex items-center justify-between">
+      <header className="px-4 pb-2 pt-safe-t">
+        <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
             onClick={onOpenProfile}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70 shadow-[0_10px_24px_rgba(31,27,24,0.08)]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70 shadow-[0_10px_24px_rgba(31,27,24,0.08)]"
             aria-label="Open profile"
           >
             <span className="h-5 w-5 rounded-full bg-[radial-gradient(circle_at_32%_28%,#fff7df,#b9d5c2_45%,#1f1b18_88%)]" />
@@ -43,25 +46,25 @@ export default function Explore({ onShake, onOpenProfile, onOpenTask }: ExploreP
           </div>
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70 shadow-[0_10px_24px_rgba(31,27,24,0.08)]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1f1b18]/10 bg-white/70 shadow-[0_10px_24px_rgba(31,27,24,0.08)]"
             aria-label="Notifications"
           >
-            <Bell size={18} />
+            <Bell size={17} />
           </button>
         </div>
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Nearby radar</p>
-          <div className="flex items-end justify-between gap-4">
-            <h1 className="text-[34px] font-semibold leading-[1.04] tracking-[-0.02em]">今晚附近有这些人刚好缺一个你。</h1>
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8a7e74]">Nearby radar</p>
+            <h1 className="mt-1 text-[22px] font-semibold leading-[1.08] tracking-[-0.02em]">今晚附近缺一个你。</h1>
+          </div>
             <button
               type="button"
               onClick={onShake}
-              className="mb-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#1f1b18] text-white shadow-[0_18px_45px_rgba(31,27,24,0.2)]"
+              className="mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1f1b18] text-white shadow-[0_18px_45px_rgba(31,27,24,0.2)]"
               aria-label="摇个搭子"
             >
               <Plus size={20} strokeWidth={2.5} />
             </button>
-          </div>
         </div>
       </header>
 
@@ -82,42 +85,113 @@ function ViewButton({ active, label, onClick }: { active: boolean; label: string
   )
 }
 
-function ExploreMap({ onShake, onOpenTask }: { onShake: () => void; onOpenTask: (task: ActivityTaskV2) => void }) {
-  const featured = mockActivityTasksV2[0]
+function ExploreMap({ onOpenTask }: { onShake: () => void; onOpenTask: (task: ActivityTaskV2) => void }) {
+  const [selectedTask, setSelectedTask] = useState<ActivityTaskV2 | null>(null)
+  const [zoom, setZoom] = useState(1.04)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const dragRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
+
+  function setBoundedZoom(nextZoom: number) {
+    setZoom(Math.min(1.85, Math.max(0.86, nextZoom)))
+  }
+
+  function resetMap() {
+    setZoom(1.04)
+    setPan({ x: 0, y: 0 })
+  }
 
   return (
-    <section className="relative min-h-0 flex-1 overflow-hidden px-5 pb-5">
-      <div className="relative h-full overflow-hidden rounded-[32px] border border-[#1f1b18]/10 bg-[#e9dfd2] shadow-[0_26px_70px_rgba(31,27,24,0.12)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_28%,rgba(255,255,255,0.76),transparent_23%),radial-gradient(circle_at_68%_66%,rgba(173,207,184,0.55),transparent_28%)]" />
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 320 520" role="img" aria-label="Stylized campus map">
-          <path d="M-20 360 C80 310 120 410 220 355 C285 320 305 350 350 318" fill="none" stroke="#1f1b18" strokeOpacity="0.08" strokeWidth="44" strokeLinecap="round" />
-          <path d="M35 96 C120 128 166 116 276 84" fill="none" stroke="#1f1b18" strokeOpacity="0.1" strokeWidth="18" strokeLinecap="round" />
-          <path d="M88 0 C130 160 112 298 74 540" fill="none" stroke="#fffaf1" strokeOpacity="0.95" strokeWidth="20" strokeLinecap="round" />
-          <path d="M-10 248 C86 232 170 244 335 202" fill="none" stroke="#fffaf1" strokeOpacity="0.92" strokeWidth="18" strokeLinecap="round" />
-          <path d="M218 -15 C196 132 218 284 292 530" fill="none" stroke="#fffaf1" strokeOpacity="0.8" strokeWidth="16" strokeLinecap="round" />
-        </svg>
+    <section className="relative min-h-0 flex-1 overflow-hidden bg-[#e9dfd2]">
+      <div
+        className="relative h-full cursor-grab touch-none overflow-hidden active:cursor-grabbing"
+        onPointerDown={(event) => {
+          dragRef.current = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y }
+          event.currentTarget.setPointerCapture(event.pointerId)
+        }}
+        onPointerMove={(event) => {
+          if (!dragRef.current) return
+          const nextX = dragRef.current.panX + event.clientX - dragRef.current.x
+          const nextY = dragRef.current.panY + event.clientY - dragRef.current.y
+          setPan({ x: nextX, y: nextY })
+        }}
+        onPointerUp={() => {
+          dragRef.current = null
+        }}
+        onPointerCancel={() => {
+          dragRef.current = null
+        }}
+        onWheel={(event) => {
+          event.preventDefault()
+          setBoundedZoom(zoom + (event.deltaY > 0 ? -0.08 : 0.08))
+        }}
+      >
+        <div
+          className="absolute inset-[-14%] transition-transform duration-75 ease-out"
+          style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})`, transformOrigin: 'center' }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_28%,rgba(255,255,255,0.76),transparent_23%),radial-gradient(circle_at_68%_66%,rgba(173,207,184,0.55),transparent_28%)]" />
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 320 520" role="img" aria-label="Stylized campus map">
+            <path d="M-28 390 C78 326 130 426 232 362 C294 322 316 354 360 318" fill="none" stroke="#1f1b18" strokeOpacity="0.08" strokeWidth="50" strokeLinecap="round" />
+            <path d="M26 96 C120 128 166 116 286 84" fill="none" stroke="#1f1b18" strokeOpacity="0.1" strokeWidth="20" strokeLinecap="round" />
+            <path d="M88 -20 C130 158 112 298 70 555" fill="none" stroke="#fffaf1" strokeOpacity="0.96" strokeWidth="22" strokeLinecap="round" />
+            <path d="M-20 248 C86 232 170 244 344 202" fill="none" stroke="#fffaf1" strokeOpacity="0.94" strokeWidth="20" strokeLinecap="round" />
+            <path d="M218 -28 C196 132 218 284 296 548" fill="none" stroke="#fffaf1" strokeOpacity="0.82" strokeWidth="18" strokeLinecap="round" />
+            <path d="M-22 470 C96 410 198 436 348 386" fill="none" stroke="#fffaf1" strokeOpacity="0.68" strokeWidth="15" strokeLinecap="round" />
+          </svg>
 
-        {mockActivityTasksV2.map((task) => (
-          <MapMarker key={task.id} task={task} />
-        ))}
-        {lockedActivityPlaceholders.map((item) => (
-          <div
-            key={item.id}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#1f1b18]/24 bg-white/35 px-3 py-2 text-[10px] font-semibold text-[#6f655d] backdrop-blur"
-            style={{ left: `${item.mapX}%`, top: `${item.mapY}%` }}
-          >
-            {item.label}
-          </div>
-        ))}
+          {mockActivityTasksV2.map((task) => (
+            <MapMarker
+              key={task.id}
+              task={task}
+              selected={selectedTask?.id === task.id}
+              onSelect={() => setSelectedTask(task)}
+            />
+          ))}
+          {lockedActivityPlaceholders.map((item) => (
+            <div
+              key={item.id}
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#1f1b18]/24 bg-white/38 px-3 py-2 text-[10px] font-semibold text-[#6f655d] shadow-[0_10px_26px_rgba(31,27,24,0.08)] backdrop-blur"
+              style={{ left: `${item.mapX}%`, top: `${item.mapY}%` }}
+            >
+              {item.label}
+            </div>
+          ))}
+        </div>
 
-        <div className="absolute left-4 right-4 top-4 flex items-center gap-2 rounded-full border border-[#1f1b18]/10 bg-white/75 px-4 py-3 text-sm text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur">
+        <div className="absolute left-4 right-4 top-4 flex items-center gap-2 rounded-full border border-[#1f1b18]/10 bg-white/78 px-4 py-3 text-sm text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
           <Search size={16} />
           <span>同济大学 · 四平路校区附近</span>
         </div>
 
-        <div className="absolute bottom-4 left-4 right-4">
-          <ActivityCard task={featured} compact onShake={onShake} onOpenTask={onOpenTask} />
+        <div className="absolute right-4 top-[76px] flex flex-col overflow-hidden rounded-full border border-[#1f1b18]/10 bg-white/78 shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
+          <button type="button" onClick={() => setBoundedZoom(zoom + 0.14)} className="grid h-10 w-10 place-items-center border-b border-[#1f1b18]/8">
+            <Plus size={16} />
+          </button>
+          <button type="button" onClick={() => setBoundedZoom(zoom - 0.14)} className="grid h-10 w-10 place-items-center border-b border-[#1f1b18]/8">
+            <Minus size={16} />
+          </button>
+          <button type="button" onClick={resetMap} className="grid h-10 w-10 place-items-center">
+            <LocateFixed size={16} />
+          </button>
         </div>
+
+        {selectedTask ? (
+          <div className="absolute bottom-4 left-4 right-4 animate-slide-up">
+            <button
+              type="button"
+              onClick={() => setSelectedTask(null)}
+              className="absolute -right-1 -top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-[#1f1b18] text-white shadow-[0_12px_28px_rgba(31,27,24,0.18)]"
+              aria-label="Close task card"
+            >
+              <X size={15} />
+            </button>
+            <ActivityCard task={selectedTask} compact onOpenTask={onOpenTask} />
+          </div>
+        ) : (
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-[#1f1b18]/10 bg-white/75 px-4 py-2 text-xs font-semibold text-[#6f655d] shadow-[0_14px_35px_rgba(31,27,24,0.08)] backdrop-blur-xl">
+            拖动地图，点一个标记查看
+          </div>
+        )}
       </div>
     </section>
   )
@@ -135,14 +209,20 @@ function ExploreList({ onOpenTask }: { onOpenTask: (task: ActivityTaskV2) => voi
   )
 }
 
-function MapMarker({ task }: { task: ActivityTaskV2 }) {
+function MapMarker({ task, selected, onSelect }: { task: ActivityTaskV2; selected: boolean; onSelect: () => void }) {
   return (
-    <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${task.mapX}%`, top: `${task.mapY}%` }}>
-      <div className={`flex items-center gap-2 rounded-full border px-3 py-2 shadow-[0_16px_35px_rgba(31,27,24,0.12)] backdrop-blur ${task.locked ? 'border-[#1f1b18]/10 bg-white/55 text-[#8a7e74]' : 'border-[#1f1b18]/15 bg-[#1f1b18] text-white'}`}>
+    <button
+      type="button"
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={onSelect}
+      className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform active:scale-95"
+      style={{ left: `${task.mapX}%`, top: `${task.mapY}%` }}
+    >
+      <div className={`flex items-center gap-2 rounded-full border px-3 py-2 shadow-[0_16px_35px_rgba(31,27,24,0.12)] backdrop-blur ${selected ? 'scale-105 ring-4 ring-white/70' : ''} ${task.locked ? 'border-[#1f1b18]/10 bg-white/62 text-[#8a7e74]' : 'border-[#1f1b18]/15 bg-[#1f1b18] text-white'}`}>
         <ActivityGlyph activityNodeId={task.activityNodeId} size={15} />
         <span className="max-w-[92px] truncate text-[11px] font-semibold">{task.expiresAtLabel}</span>
       </div>
-    </div>
+    </button>
   )
 }
 
