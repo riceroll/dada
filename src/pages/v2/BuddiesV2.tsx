@@ -42,7 +42,7 @@ export default function BuddiesV2({
 
         <div className="space-y-3 pb-4">
           {buddies.map((buddy) => (
-            <article key={buddy.user.id} className="rounded-[30px] border border-[#1f1b18]/10 bg-white/74 p-4 shadow-[0_18px_45px_rgba(31,27,24,0.07)]">
+            <article key={buddy.user.id} className="paper-card rounded-[22px] p-3.5">
               <div className="flex items-center gap-3">
                 <UserAvatar user={buddy.user} size="md" />
                 <div className="min-w-0 flex-1">
@@ -51,7 +51,7 @@ export default function BuddiesV2({
                 </div>
                 <ShieldCheck size={18} className="text-[#8a7e74]" />
               </div>
-              <div className="mt-4 flex items-center gap-3 rounded-2xl bg-[#f7f2eb] px-3 py-3">
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[#f3eee6]/80 px-3 py-2.5">
                 <TaskIcon task={{ emoji: buddy.taskEmoji, title: buddy.taskTitle, kind: 'random' }} size="sm" />
                 <p className="min-w-0 flex-1 truncate text-sm text-[#5f5750]">一起 {buddy.taskTitle}</p>
               </div>

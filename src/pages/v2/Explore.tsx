@@ -246,11 +246,9 @@ function ActivityCard({
   onOpenTask: (task: ActivityTaskV2) => void
 }) {
   return (
-    <article className={`rounded-[22px] border border-[#1f1b18]/10 bg-white/80 p-3 shadow-[0_14px_36px_rgba(31,27,24,0.08)] backdrop-blur ${task.locked ? 'border-dashed opacity-78' : ''}`}>
+    <article className={`paper-card rounded-[20px] p-3 ${task.locked ? 'opacity-78' : ''}`}>
       <div className="flex items-start gap-2.5">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[15px] bg-[#1f1b18] text-white">
-          <ActivityGlyph activityNodeId={task.activityNodeId} size={18} />
-        </div>
+        <ActivityMark activityNodeId={task.activityNodeId} />
         <div className="min-w-0 flex-1">
           <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-[#8a7e74]">
             <MapPin size={12} />
@@ -292,6 +290,27 @@ function InfoPill({ icon, label }: { icon: React.ReactNode; label: string }) {
       <span className="truncate">{label}</span>
     </div>
   )
+}
+
+function ActivityMark({ activityNodeId }: { activityNodeId: string }) {
+  const tone = activityTone(activityNodeId)
+  return (
+    <div className={`relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[15px] border border-[#1f1b18]/8 bg-gradient-to-br ${tone.bg} shadow-[0_10px_22px_rgba(31,27,24,0.07)]`}>
+      <span className={`absolute -right-3 -top-3 h-8 w-8 rounded-full ${tone.blob} opacity-60 blur-sm`} />
+      <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_48%,rgba(31,27,24,0.05))]" />
+      <span className="relative z-10" style={{ color: tone.color }}>
+        <ActivityGlyph activityNodeId={activityNodeId} size={18} />
+      </span>
+    </div>
+  )
+}
+
+function activityTone(activityNodeId: string) {
+  if (activityNodeId === 'coffee') return { bg: 'from-[#EDE3D6] to-[#C8B7A4]', blob: 'bg-[#F5E7C7]', color: '#74685D' }
+  if (activityNodeId === 'library-study') return { bg: 'from-[#E8E6DC] to-[#B9C1B1]', blob: 'bg-[#DDE7D6]', color: '#667365' }
+  if (activityNodeId === 'running') return { bg: 'from-[#E5E1D8] to-[#B7C4C6]', blob: 'bg-[#D6E1E2]', color: '#66787A' }
+  if (activityNodeId === 'piano' || activityNodeId === 'music') return { bg: 'from-[#EAE2DF] to-[#C9B8C1]', blob: 'bg-[#ECD6DC]', color: '#766B72' }
+  return { bg: 'from-[#ECE6DC] to-[#CFC8B8]', blob: 'bg-[#F2E8CC]', color: '#746D63' }
 }
 
 function ActivityGlyph({ activityNodeId, size }: { activityNodeId: string; size: number }) {

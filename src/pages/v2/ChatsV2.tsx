@@ -22,7 +22,7 @@ export default function ChatsV2() {
               key={thread.id}
               type="button"
               onClick={() => setOpen(thread)}
-              className="w-full rounded-[30px] border border-[#1f1b18]/10 bg-white/74 p-4 text-left shadow-[0_18px_45px_rgba(31,27,24,0.07)]"
+              className="paper-card w-full rounded-[22px] p-3.5 text-left"
             >
               <div className="flex gap-3">
                 <div className="relative shrink-0">
@@ -38,7 +38,7 @@ export default function ChatsV2() {
                     </h2>
                     <span className="shrink-0 text-[11px] font-medium text-[#8a7e74]">{thread.lastTimeLabel}</span>
                   </div>
-                  <div className="mt-1 inline-flex max-w-full items-center gap-1 rounded-full bg-[#f7f2eb] px-3 py-1 text-[11px] font-medium text-[#6f655d]">
+                  <div className="mt-1 inline-flex max-w-full items-center gap-1 rounded-full bg-[#f3eee6]/80 px-3 py-1 text-[11px] font-medium text-[#6f655d]">
                     <ShieldCheck size={12} />
                     <span className="truncate">一起{thread.taskTitle} · {thread.metAtLabel}</span>
                   </div>
@@ -97,7 +97,7 @@ function ChatRoomV2({ thread, onBack }: { thread: ChatThread; onBack: () => void
       </div>
 
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-4 no-scrollbar">
-        <div className="mb-4 flex items-center gap-2 rounded-2xl border border-[#1f1b18]/10 bg-white/62 px-3 py-2 text-xs leading-5 text-[#6f655d]">
+        <div className="paper-card mb-4 flex items-center gap-2 rounded-2xl px-3 py-2 text-xs leading-5 text-[#6f655d]">
           <LockKeyhole size={14} />
           <span>默认只开放这段任务相关聊天。想换时间或 reveal 头像，建议先发请求。</span>
         </div>
@@ -105,7 +105,7 @@ function ChatRoomV2({ thread, onBack }: { thread: ChatThread; onBack: () => void
           {msgs.map((msg, index) => (
             <div key={`${msg.text}-${index}`} className={msg.from === 'me' ? 'flex justify-end' : 'flex items-end gap-2'}>
               {msg.from === 'other' && <UserAvatar user={thread.user} size="sm" />}
-              <div className={`max-w-[78%] rounded-[22px] px-4 py-3 text-sm leading-6 ${msg.from === 'me' ? 'bg-[#1f1b18] text-white rounded-br-md' : 'border border-[#1f1b18]/10 bg-white/78 rounded-bl-md'}`}>
+              <div className={`max-w-[78%] rounded-[20px] px-4 py-3 text-sm leading-6 ${msg.from === 'me' ? 'bg-[#1f1b18] text-white rounded-br-md' : 'paper-card rounded-bl-md'}`}>
                 {msg.text}
               </div>
             </div>

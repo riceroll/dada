@@ -49,9 +49,7 @@ export default function PendingV2({
             return (
               <article
                 key={item.task.id}
-                className={`rounded-[22px] border p-3 shadow-[0_14px_34px_rgba(31,27,24,0.07)] ${
-                  active ? 'border-[#1f1b18]/10 bg-white/78' : 'border-dashed border-[#1f1b18]/16 bg-white/42 opacity-70'
-                }`}
+                className={`paper-card rounded-[20px] p-3 ${active ? '' : 'opacity-64'}`}
               >
                 <button type="button" onClick={() => onOpenTask(item.task)} className="flex w-full gap-2.5 text-left">
                   <TaskIcon task={item.task} size="sm" className="shrink-0" />
@@ -67,7 +65,7 @@ export default function PendingV2({
                     </p>
                   </div>
                 </button>
-                <div className="mt-3 flex items-center justify-between rounded-[16px] bg-[#f7f2eb] px-3 py-2.5">
+                <div className="mt-3 flex items-center justify-between rounded-[16px] bg-[#f3eee6]/80 px-3 py-2.5">
                   <div className="flex min-w-0 items-center gap-2">
                     <UserAvatar user={item.task.host} size="sm" />
                     <span className="truncate text-[13px] text-[#5f5750]">{item.task.host.grade} · {item.task.host.college}</span>
